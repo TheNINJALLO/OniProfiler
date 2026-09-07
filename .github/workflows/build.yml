@@ -69,7 +69,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-24.04
+          - os: ubuntu-22.04
             platform: linux-x86_64
             extension: so
           - os: windows-2025
@@ -121,7 +121,7 @@ jobs:
       - name: Upload installable plugin file
         uses: actions/upload-artifact@v7
         with:
-          path: build/RelWithDebInfo/endstone_oniprofiler.${{ matrix.extension }}
+          path: dist/endstone_oniprofiler.${{ matrix.extension }}
           archive: false
           if-no-files-found: error
           retention-days: 30

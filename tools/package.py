@@ -5,6 +5,8 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import shutil
 import struct
 from pathlib import Path
 import zipfile
@@ -12,7 +14,10 @@ from project_files import project_files
 from build_viewer import bundle
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.0.0-rc.1"
+VERSION = "1.0.0-rc.2"
+
+
+MAX_LINUX_GLIBC = (2, 35)
 
 
 def validate_binary(binary: Path, platform: str) -> None:
@@ -30,6 +35,14 @@ def validate_binary(binary: Path, platform: str) -> None:
             stream.seek(offset);pe=stream.read(24)
             if pe[:4]!=b"PE\0\0" or struct.unpack_from("<H",pe,4)[0]!=0x8664 or not struct.unpack_from("<H",pe,22)[0]&0x2000:
                 raise ValueError("Expected an AMD64 PE DLL")
+
+def validate_linux_glibc(binary: Path) -> None:
+    versions={(int(major),int(minor)) for major,minor in re.findall(rb"GLIBC_(\d+)\.(\d+)",binary.read_bytes())}
+    if not versions:
+        raise ValueError("Linux plugin does not declare any GLIBC symbol versions")
+    required=max(versions)
+    if required>MAX_LINUX_GLIBC:
+        raise ValueError(f"Linux plugin requires GLIBC_{required[0]}.{required[1]}; maximum supported baseline is GLIBC_{MAX_LINUX_GLIBC[0]}.{MAX_LINUX_GLIBC[1]}")
 
 def source_archive(root: Path, output: Path, deps: Path | None = None) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -65,6 +78,7 @@ def main() -> None:
     binary=args.build_dir/("endstone_oniprofiler"+suffix)
     if not binary.is_file(): raise ValueError("Native binary was not built: "+str(binary))
     validate_binary(binary,args.platform)
+    if args.platform=="linux-x86_64": validate_linux_glibc(binary)
     # Do not ship a native binary without the inspected/patched engine sources.
     from patch_engine import PATCHES, transform
     deps=args.build_dir/"_deps"
@@ -74,6 +88,7 @@ def main() -> None:
     licenses=args.build_dir/"third-party-licenses"
     if not (licenses/"manifest.json").is_file(): raise ValueError("Conan dependency license manifest is missing")
     source=source_archive(ROOT,args.output/f"OniProfiler-{VERSION}-{args.platform}-source.zip",deps)
+    shutil.copy2(binary,args.output/binary.name)
     artifact=args.output/f"OniProfiler-{VERSION}-{args.platform}.zip"
     with zipfile.ZipFile(artifact,"w",zipfile.ZIP_DEFLATED) as archive:
         archive.write(binary,binary.name)
@@ -84,7 +99,7 @@ def main() -> None:
         if pdb.exists(): archive.write(pdb,pdb.name)
         for file in project_files(ROOT):
             rel=file.relative_to(ROOT)
-            if rel.parts[0] in {"web","docs","integrations","deploy","controlplane"} or rel.as_posix() in {"LICENSE","NOTICE","README.md","VALIDATION.md"}:
+            if rel.parts[0] in {"web","docs","integrations","deploy","controlplane"} or rel.as_posix() in {"LICENSE","NOTICE","README.md","INSTALL.md","VALIDATION.md"}:
                 archive.write(file,rel.as_posix())
         for name in ("conan.lock","conan-graph.json"):
             path=ROOT/name

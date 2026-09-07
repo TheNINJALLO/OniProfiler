@@ -39,6 +39,10 @@ std::uint64_t threadId()
 }
 class OniProfilerPlugin : public endstone::Plugin {
 public:
+    void onLoad() override
+    {
+        getLogger().info("OniProfiler {} native plugin loaded; waiting for post-world enable.", oni::version);
+    }
     void onEnable() override
     {
         // Two copies of native sampling/allocation hooks must not coexist.
@@ -119,7 +123,7 @@ private:
     std::unique_ptr<oni::ControlCenter> center_;
     spark::endstone_adapter::PapiIntegration papi_;
 };
-ENDSTONE_PLUGIN("oniprofiler","1.0.0-rc.1",OniProfilerPlugin)
+ENDSTONE_PLUGIN("oniprofiler","1.0.0-rc.2",OniProfilerPlugin)
 {
     description="OniProfiler powered by spark: guided native performance investigations.";
     authors={"TheN1NJ4LL0","ReallocAll (upstream spark port)"};

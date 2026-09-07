@@ -42,6 +42,9 @@ def main():
                 target=a.release_assets/f'OniProfiler-{v}-{platform}{suffix}.zip'
                 if not target.is_file() or target.stat().st_size==0: p.error('Missing release asset '+target.name)
         if not list(a.release_assets.glob('oniprofiler_control-*.whl')): p.error('Control-plane wheel is missing')
+        for plugin in ('endstone_oniprofiler.so','endstone_oniprofiler.dll'):
+            target=a.release_assets/plugin
+            if not target.is_file() or target.stat().st_size<1024: p.error('Missing raw plugin asset '+plugin)
     if a.checksums: print(checksums(a.checksums))
     print('Consistent release metadata: '+v)
 if __name__=='__main__':main()

@@ -11,15 +11,17 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'));sys.path.insert(0,str(ROOT/'controlplane'))
 from check_release import verify,checksums
 from project_files import project_files
-from package import validate_binary,source_archive
+from package import validate_binary,validate_linux_glibc,source_archive
 from oniprofiler_control.sdk import Instrumentor
 
 class ReleaseTests(unittest.TestCase):
-    def test_versions(self):self.assertEqual(verify(),'1.0.0-rc.1')
+    def test_versions(self):self.assertEqual(verify(),'1.0.0-rc.2')
     def test_native_platform_matrix(self):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
         platforms=w['jobs']['native']['strategy']['matrix']['include']
         self.assertEqual({p['platform'] for p in platforms},{'linux-x86_64','windows-x86_64'})
+        linux=next(p for p in platforms if p['platform']=='linux-x86_64')
+        self.assertEqual(linux['os'],'ubuntu-22.04')
         self.assertIn('workflow_dispatch',w['on']);self.assertIn('pull_request',w['on']);self.assertEqual(w['permissions'],{'contents':'read'})
     def test_release_is_gated_and_draft(self):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
@@ -49,7 +51,8 @@ class ReleaseTests(unittest.TestCase):
         self.assertIn('6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',sh);self.assertIn('signed-by=',sh)
     def test_combined_source_files_included(self):
         names={p.relative_to(ROOT).as_posix() for p in project_files(ROOT)}
-        self.assertTrue({'controlplane/oniprofiler_control/server.py','controlplane/oniprofiler_control/static/app.js','controlplane/pyproject.toml','integrations/runtime-sdk.mjs','deploy/Dockerfile','deploy/Caddyfile','deploy/agent.example.toml','tools/ci/install-llvm-windows.ps1','.github/workflows/build.yml','VERSION','controlplane/LICENSE'}<=names)
+        self.assertTrue({'INSTALL.md','controlplane/oniprofiler_control/server.py','controlplane/oniprofiler_control/static/app.js','controlplane/pyproject.toml','integrations/runtime-sdk.mjs','deploy/Dockerfile','deploy/Caddyfile','deploy/agent.example.toml','tools/ci/install-llvm-windows.ps1','.github/workflows/build.yml','VERSION','controlplane/LICENSE'}<=names)
+        self.assertIn('"INSTALL.md"',(ROOT/'tools/package.py').read_text())
     def test_private_and_build_files_excluded(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d)
@@ -66,6 +69,12 @@ class ReleaseTests(unittest.TestCase):
             validate_binary(p,'windows-x86_64')
             data[128]=0;p.write_bytes(data)
             with self.assertRaises(ValueError):validate_binary(p,'windows-x86_64')
+    def test_linux_glibc_baseline(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'plugin.so';p.write_bytes(b'ELF GLIBC_2.2.5 GLIBC_2.35')
+            validate_linux_glibc(p)
+            p.write_bytes(b'ELF GLIBC_2.38')
+            with self.assertRaises(ValueError):validate_linux_glibc(p)
     def test_checksum_manifest(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);(root/'a.txt').write_bytes(b'abc');out=checksums(root)

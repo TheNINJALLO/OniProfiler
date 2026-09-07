@@ -2,13 +2,13 @@
 
 **Private performance investigations for Minecraft Bedrock servers.** A combined release-candidate implementation of the in-game control center, investigation tools and live multi-server dashboard.
 
-Version: **1.0.0-rc.1**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit recorded in `upstream/manifest.json`.
+Version: **1.0.0-rc.2**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit recorded in `upstream/manifest.json`.
 
-> This checkout is source. The supplied environment has not compiled a complete native `.so` or `.dll`, run the GitHub workflow, or loaded the plugin in BDS. The portable C++, control service and interface tests are documented in [VALIDATION.md](VALIDATION.md). Use the native CI and staging gates before production.
+> Release binaries are compiled and tested by GitHub Actions. They have not yet completed the full live-BDS staging checklist in [VALIDATION.md](VALIDATION.md), so keep this release candidate on a staging server until its runtime behavior and overhead are verified.
 
 ## Start here
 
-**Need the plugin file?** Follow [docs/BUILD.md](docs/BUILD.md). Commit this project's contents to your own GitHub repository, then use **Actions > Build OniProfiler**. A successful run supplies `endstone_oniprofiler.so` and `endstone_oniprofiler.dll` plus source packages and checksums. No separate Spark installation is needed or appropriate alongside OniProfiler.
+**Need the plugin file?** Download the raw `endstone_oniprofiler.so` (Linux) or `endstone_oniprofiler.dll` (Windows) from the GitHub release. Put that one file directly in the server's `plugins/` directory and fully restart the server. Do not put the release ZIP or `oniprofiler_control-*.whl` in `plugins/`; the wheel is the optional dashboard service. See [INSTALL.md](INSTALL.md).
 
 **Need the live dashboard?** Follow [docs/DASHBOARD.md](docs/DASHBOARD.md). The Python distribution contains the API, responsive browser interface, outbound agent, local administrator tools and startup wrapper. The native plugin remains usable without the dashboard.
 
@@ -26,7 +26,7 @@ Version: **1.0.0-rc.1**. Native engine: EndstoneMC/spark 0.5.3 at the exact comm
 | Outbound agent | Verified HTTPS, local mailbox, exact boot/session checks, command expiry, acknowledgements, reconnect/backoff, report synchronization and optional raw-profile upload. |
 | Runtime integrations | Python sync/async timing, JavaScript timing core, Node atomic-file exporter, and a BDS-only experimental HTTP publisher using a write-only runtime key. |
 | Hosting context | Optional explicitly selected cgroup v2 metrics, Pterodactyl resource readings, reduced Discord incident notices and a startup wrapper. |
-| Build and operations | Linux/Windows native workflows, application wheel, portable and API/UI tests, Docker Compose and systemd examples, draft prerelease gate and source/checksum packages. |
+| Build and operations | GLIBC-compatible Linux and Windows native workflows, raw game-plugin downloads, application wheel, portable and API/UI tests, Docker Compose and systemd examples, prerelease gate and source/checksum packages. |
 
 ## Architecture
 

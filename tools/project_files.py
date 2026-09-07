@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT_FILES = {
-    "CMakeLists.txt", "conanfile.py", "LICENSE", "NOTICE", "README.md", "CHANGELOG.md",
+    "CMakeLists.txt", "conanfile.py", "LICENSE", "NOTICE", "README.md", "INSTALL.md", "CHANGELOG.md",
     "SECURITY.md", "CONTRIBUTING.md", "AGENTS.md", "VALIDATION.md", "VERSION", ".dockerignore", ".gitignore", ".gitattributes", ".conanrc",
 }
 FOLDERS = {"src", "tests", "tools", "web", "docs", "upstream", ".github", "controlplane", "integrations", "deploy"}

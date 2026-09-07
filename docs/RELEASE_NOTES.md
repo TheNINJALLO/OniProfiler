@@ -1,6 +1,10 @@
-# OniProfiler powered by spark 1.0.0-rc.1
+# OniProfiler powered by spark 1.0.0-rc.2
 
 Combined implementation of the three planned release stages. This is a release candidate, not a claim of production qualification.
+
+## rc.2 loader and distribution fixes
+
+The Linux native plugin is rebuilt on Ubuntu 22.04 to remove the accidental GLIBC 2.38 requirement from rc.1. Packaging now rejects Linux binaries requiring anything newer than GLIBC 2.35. The raw `endstone_oniprofiler.so` and `endstone_oniprofiler.dll` are direct release assets with checksums, and the plugin emits an early load message before its post-world enable phase.
 
 ## In-game control
 
@@ -16,7 +20,7 @@ A self-hosted responsive dashboard, real SQLite-backed authentication and role g
 
 ## Build and distribution
 
-One GitHub workflow builds Linux x86-64 `.so` and Windows x86-64 `.dll` files, tests the components, packages corresponding native source, records dependency resolution and writes checksums. Version tags create draft prereleases only after all build jobs pass. An optional Pages workflow publishes only the offline report viewer.
+One GitHub workflow builds Linux x86-64 `.so` and Windows x86-64 `.dll` files, tests the components, publishes both raw binaries, packages corresponding native source, records dependency resolution and writes checksums. Version tags create draft prereleases only after all build jobs pass. An optional Pages workflow publishes only the offline report viewer.
 
 ## Release gates
 

@@ -28,7 +28,7 @@ PASSWORD='a-long-test-password-not-for-production'
 ORIGIN='http://127.0.0.1:8080'
 
 def snapshot(**overrides):
-    result={'schema_version':1,'product':'OniProfiler powered by spark','version':'1.0.0-rc.1','kind':'health',
+    result={'schema_version':1,'product':'OniProfiler powered by spark','version':'1.0.0-rc.2','kind':'health',
         'instance_id':'b'*32,'generated_ms':now_ms(),'health':{'tps':19.8,'mspt_mean':24.1,'mspt_p95':48.2,'mspt_max':67,'rss_bytes':2048,'players':4,'entities':20,'chunks':4,'tick_samples':200},
         'capabilities':{'remote_controls':True,'remote_management':True},'session':{'running':False,'background':False,'started_ms':0,'owner':''},
         'loaded_areas':{'snapshot_ms':now_ms(),'areas':[{'dimension':'overworld','chunk_x':-4,'chunk_z':2,'entities':20,'types':{'minecraft:cow':20}}]},
