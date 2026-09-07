@@ -22,6 +22,9 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual({p['platform'] for p in platforms},{'linux-x86_64','windows-x86_64'})
         linux=next(p for p in platforms if p['platform']=='linux-x86_64')
         self.assertEqual(linux['os'],'ubuntu-22.04')
+        cache=next(s for s in w['jobs']['native']['steps'] if s.get('uses','').startswith('actions/cache@'))
+        self.assertIn('${{ matrix.os }}',cache['with']['key'])
+        self.assertIn('${{ matrix.platform }}',cache['with']['key'])
         self.assertIn('workflow_dispatch',w['on']);self.assertIn('pull_request',w['on']);self.assertEqual(w['permissions'],{'contents':'read'})
     def test_release_is_gated_and_draft(self):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
