@@ -162,9 +162,12 @@ jobs:
           path: release-assets
       - uses: actions/download-artifact@v8
         with:
-          pattern: OniProfiler-*-x86_64
+          name: OniProfiler-linux-x86_64
           path: release-assets
-          merge-multiple: true
+      - uses: actions/download-artifact@v8
+        with:
+          name: OniProfiler-windows-x86_64
+          path: release-assets
       - name: Verify packages and create a draft only
         env:
           GH_TOKEN: ${{ github.token }}

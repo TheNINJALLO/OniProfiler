@@ -25,6 +25,9 @@ class ReleaseTests(unittest.TestCase):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
         j=w['jobs']['draft-release'];self.assertEqual(j['needs'],['checks','native'])
         run=j['steps'][-1]['run'];self.assertIn('--draft',run);self.assertIn('--verify-tag',run)
+        downloads={s.get('with',{}).get('name') for s in j['steps'] if s.get('uses','').startswith('actions/download-artifact@')}
+        self.assertEqual(downloads,{'OniProfiler-application','OniProfiler-linux-x86_64','OniProfiler-windows-x86_64'})
+        self.assertFalse(any('pattern' in s.get('with',{}) for s in j['steps']))
         self.assertNotIn('pull_request_target',w['on'])
     def test_native_checks_and_artifacts(self):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
