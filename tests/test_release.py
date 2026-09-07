@@ -15,7 +15,7 @@ from package import validate_binary,validate_linux_glibc,source_archive
 from oniprofiler_control.sdk import Instrumentor
 
 class ReleaseTests(unittest.TestCase):
-    def test_versions(self):self.assertEqual(verify(),'1.0.0-rc.2')
+    def test_versions(self):self.assertEqual(verify(),'1.0.0')
     def test_native_platform_matrix(self):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
         platforms=w['jobs']['native']['strategy']['matrix']['include']
@@ -30,6 +30,8 @@ class ReleaseTests(unittest.TestCase):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
         j=w['jobs']['draft-release'];self.assertEqual(j['needs'],['checks','native'])
         run=j['steps'][-1]['run'];self.assertIn('--draft',run);self.assertIn('--verify-tag',run)
+        self.assertIn('if [[ "$RELEASE_TAG" == *-* ]]',run)
+        self.assertIn('release_flags+=(--prerelease)',run)
         downloads={s.get('with',{}).get('name') for s in j['steps'] if s.get('uses','').startswith('actions/download-artifact@')}
         self.assertEqual(downloads,{'OniProfiler-application','OniProfiler-linux-x86_64','OniProfiler-windows-x86_64'})
         self.assertFalse(any('pattern' in s.get('with',{}) for s in j['steps']))

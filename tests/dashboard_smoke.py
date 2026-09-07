@@ -17,7 +17,7 @@ const stamp=Date.now();
 const user={id:'11111111111111111111111111111111',username:'demo-owner',is_admin:true,csrf:'synthetic-csrf'};
 const health={tps:19.83,tps_span_ms:10000,mspt_mean:28.5,mspt_p95:51.2,mspt_max:84.7,rss_bytes:3221225472,players:12,entities:864,chunks:176,tick_samples:200};
 const areas=[{dimension:'overworld',chunk_x:-12,chunk_z:8,entities:164,types:{'minecraft:villager':64,'minecraft:cow':100}},{dimension:'nether',chunk_x:4,chunk_z:-7,entities:82,types:{'minecraft:piglin':82}}];
-const base={schema_version:1,product:'OniProfiler powered by spark',version:'1.0.0-rc.2',kind:'health',instance_id:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',generated_ms:stamp,health,
+const base={schema_version:1,product:'OniProfiler powered by spark',version:'1.0.0',kind:'health',instance_id:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',generated_ms:stamp,health,
  session:{running:false,background:false,exporting:false,started_ms:0,owner:''},
  findings:[{level:'warning',evidence:'measured',title:'SYNTHETIC DEMO DATA',detail:'Interface-test values only. This is not connected to a Minecraft server.'}],
  loaded_areas:{snapshot_ms:stamp,areas}};

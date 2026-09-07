@@ -174,4 +174,8 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           python tools/check_release.py --tag "$RELEASE_TAG" --release-assets release-assets --checksums release-assets
-          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --prerelease --title "OniProfiler powered by spark $RELEASE_TAG" --notes-file docs/RELEASE_NOTES.md
+          release_flags=(--draft)
+          if [[ "$RELEASE_TAG" == *-* ]]; then
+            release_flags+=(--prerelease)
+          fi
+          gh release create "$RELEASE_TAG" release-assets/* --verify-tag "${release_flags[@]}" --title "OniProfiler powered by spark $RELEASE_TAG" --notes-file docs/RELEASE_NOTES.md

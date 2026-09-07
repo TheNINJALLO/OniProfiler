@@ -19,7 +19,7 @@ The Compose deployment exposes only the TLS proxy, not the API's internal port. 
 
 ## Central dashboard without Docker
 
-Install the included `oniprofiler_control-1.0.0rc2-py3-none-any.whl` into Python 3.11+ in a virtual environment. This is an external dashboard/agent package, not the game plugin, and must not be placed in the Endstone `plugins/` directory. Alternatively install `./controlplane` from source:
+Install the included `oniprofiler_control-1.0.0-py3-none-any.whl` into Python 3.11+ in a virtual environment. This is an external dashboard/agent package, not the game plugin, and must not be placed in the Endstone `plugins/` directory. Alternatively install `./controlplane` from source:
 
 ```bash
 python -m venv .venv

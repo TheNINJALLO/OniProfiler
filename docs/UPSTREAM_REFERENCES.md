@@ -12,4 +12,4 @@ The exact inspected engine/API revisions are in `upstream/manifest.json`. The na
 - Microsoft Bedrock experimental server-net reference: https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server-net/minecraft-server-net?view=minecraft-bedrock-experimental
 - Docker Compose secrets: https://docs.docker.com/compose/how-tos/use-secrets/
 
-These references establish API/build assumptions, not successful runtime deployment of this release candidate. Native provenance and observed test results are separate from intended compatibility.
+These references establish API/build assumptions, not complete runtime qualification of this release. Native provenance and observed test results are separate from intended compatibility.

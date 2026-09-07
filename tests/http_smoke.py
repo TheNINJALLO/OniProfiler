@@ -26,7 +26,7 @@ def main():
         store=Store(Settings(root/'data',origin,True));store.create_user('SmokeOwner','synthetic-password-for-smoke',True)
         server=store.create_server('Synthetic HTTP test','local-smoke')
         plugin=root/'plugin';(plugin/'reports').mkdir(parents=True)
-        payload={'schema_version':1,'product':'OniProfiler powered by spark','version':'1.0.0-rc.2','kind':'health','instance_id':'b'*32,'generated_ms':now_ms(),
+        payload={'schema_version':1,'product':'OniProfiler powered by spark','version':'1.0.0','kind':'health','instance_id':'b'*32,'generated_ms':now_ms(),
             'health':{'tps':19.5,'mspt_mean':25,'tick_samples':200,'players':2},'capabilities':{'remote_controls':True,'remote_management':False},
             'session':{'running':False,'background':False,'started_ms':0,'owner':''},'findings':[{'level':'ok','evidence':'measured','title':'Synthetic HTTP fixture','detail':'Not a live server'}]}
         (plugin/'reports/dashboard.json').write_text(json.dumps(payload))
@@ -46,7 +46,7 @@ def main():
                         except httpx.ConnectError:pass
                         time.sleep(.1)
                     else:raise RuntimeError('HTTP service did not become ready')
-                    assert response.json()['version']=='1.0.0-rc.2';checks+=1
+                    assert response.json()['version']=='1.0.0';checks+=1
                     assert client.get('/api/me').status_code==401;checks+=1
                     page=client.get('/');assert 'OniProfiler' in page.text and "script-src 'self'" in page.headers['content-security-policy'];checks+=1
                     assert client.get('/static/app.js').status_code==200;checks+=1

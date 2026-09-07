@@ -1,8 +1,8 @@
-# OniProfiler powered by spark 1.0.0-rc.2
+# OniProfiler powered by spark 1.0.0
 
-Combined implementation of the three planned release stages. This is a release candidate, not a claim of production qualification.
+First stable release of the combined in-game profiler controls, investigation workflow and private multi-server dashboard. The GLIBC-compatible rc.2 Linux plugin was confirmed to load on a live Endstone/BDS server before promotion. This records plugin discovery and native loading, not completion of every optional integration or performance gate.
 
-## rc.2 loader and distribution fixes
+## Loader and distribution
 
 The Linux native plugin is rebuilt on Ubuntu 22.04 to remove the accidental GLIBC 2.38 requirement from rc.1. Packaging now rejects Linux binaries requiring anything newer than GLIBC 2.35. The raw `endstone_oniprofiler.so` and `endstone_oniprofiler.dll` are direct release assets with checksums, and the plugin emits an early load message before its post-world enable phase.
 
@@ -20,8 +20,8 @@ A self-hosted responsive dashboard, real SQLite-backed authentication and role g
 
 ## Build and distribution
 
-One GitHub workflow builds Linux x86-64 `.so` and Windows x86-64 `.dll` files, tests the components, publishes both raw binaries, packages corresponding native source, records dependency resolution and writes checksums. Version tags create draft prereleases only after all build jobs pass. An optional Pages workflow publishes only the offline report viewer.
+One GitHub workflow builds Linux x86-64 `.so` and Windows x86-64 `.dll` files, tests the components, publishes both raw binaries, packages corresponding native source, records dependency resolution and writes checksums. Version tags create gated drafts only after all build jobs pass; stable tags create normal releases and suffixed tags create prereleases. An optional Pages workflow publishes only the offline report viewer.
 
 ## Release gates
 
-GitHub Actions completed the pinned native dependency build, plugin compilation, automated native tests and packaging on Linux x86-64 and Windows x86-64. Real BDS integration, Windows server loading, external hosting integrations and profiler overhead still require the supplied staging checklist. Do not run alongside standalone Spark or automatically delete entities to address reported concentrations.
+GitHub Actions completed the pinned native dependency build, plugin compilation, automated native tests and packaging on Linux x86-64 and Windows x86-64. Live Linux discovery/loading is confirmed. Windows server loading, the full in-game workflow, external hosting integrations and profiler overhead still require the supplied staging checklist. Do not run alongside standalone Spark or automatically delete entities to address reported concentrations.

@@ -123,7 +123,7 @@ private:
     std::unique_ptr<oni::ControlCenter> center_;
     spark::endstone_adapter::PapiIntegration papi_;
 };
-ENDSTONE_PLUGIN("oniprofiler","1.0.0-rc.2",OniProfilerPlugin)
+ENDSTONE_PLUGIN("oniprofiler","1.0.0",OniProfilerPlugin)
 {
     description="OniProfiler powered by spark: guided native performance investigations.";
     authors={"TheN1NJ4LL0","ReallocAll (upstream spark port)"};

@@ -13,4 +13,4 @@ Record the actual artifact SHA-256, operating system, architecture, BDS build an
 9. Test optional cgroup context against the actual game container, Pterodactyl resource requests, Discord errors/rate limits and the startup wrapper with the real loader. Deliberately kill the agent and confirm the server continues. Test both Windows and Linux process lifecycles separately.
 10. Run controlled workload A/B measurements with and without profiling, keeping players, loaded chunks, workload and duration comparable. Record latency distributions, memory growth and capture/drop rates. Set operational limits based on those results before production deployment.
 
-Outstanding failures belong in VALIDATION.md with logs. Do not publish the draft prerelease as stable until these gates have evidence.
+Outstanding failures belong in VALIDATION.md with logs. Stable versioning records the confirmed Linux load and automated gates; do not treat it as proof that every optional integration or performance gate has passed.

@@ -16,7 +16,7 @@
 #include <vector>
 
 namespace oni {
-inline constexpr char version[] = "1.0.0-rc.2";
+inline constexpr char version[] = "1.0.0";
 inline constexpr char upstream_commit[] = "8958173ad40c1da9adf3254305526443c9853848";
 
 inline std::string quote(std::string_view value)

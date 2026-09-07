@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0
+
+Promoted the GLIBC-compatible rc.2 build after its raw Linux plugin was confirmed to load on a live Endstone/BDS server. Stable tags now create normal draft releases rather than prereleases; release-candidate tags retain prerelease status. Linux and Windows raw plugins remain direct, checksummed release assets.
+
 ## 1.0.0-rc.2
 
 Rebuilt the Linux plugin on Ubuntu 22.04 and added a packaging gate that rejects native binaries requiring a GLIBC version newer than 2.35. Raw `endstone_oniprofiler.so` and `endstone_oniprofiler.dll` files are now required release assets instead of being available only inside platform ZIPs. Added an early native-load log message and clearer installation guidance that distinguishes the game plugin from the optional control-plane wheel.

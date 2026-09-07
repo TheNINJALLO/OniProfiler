@@ -10,5 +10,7 @@
   "integration": "tools/patch_engine.py; content-verified, fail-closed",
   "license": "GPL-3.0-only",
   "checked_on": "2026-09-07",
-  "runtime_tested": false
+  "runtime_tested": false,
+  "linux_native_load_confirmed": true,
+  "linux_native_load_scope": "Server owner reported the GLIBC-compatible rc.2 plugin loads and works; full smoke and performance gates remain open."
 }

@@ -23,7 +23,7 @@ OniProfiler is an independent project. The phrase "powered by spark" credits the
 upstream engine and does not imply endorsement by EndstoneMC or Spark authors.
 The native engine is not presented as original OniProfiler work.
 
-This source release candidate fetches the pinned native project during configuration.
+This source distribution fetches the pinned native project during configuration.
 Native CI packages must be distributed with the matching dependency-source ZIP.
 Dependency recipes and versions are in conanfile.py. Preserve the notices and
 license texts of all linked dependencies when redistributing native builds.

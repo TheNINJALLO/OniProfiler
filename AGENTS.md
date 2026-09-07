@@ -6,9 +6,10 @@ GPL-3.0 EndstoneMC/spark engine. Do not erase upstream attribution or rename
 native internals merely to make upstream work look original.
 
 Read README.md, VALIDATION.md, docs/ARCHITECTURE.md and docs/SMOKE_TEST.md first.
-The source release candidate has not been validated against a running BDS process. Never
-report native compilation, CI success, runtime compatibility or performance
-improvement without executing the relevant checks and recording their results.
+The GLIBC-compatible Linux native plugin has been reported loading successfully in a
+running BDS/Endstone process. The full staging checklist is not complete. Never report
+native compilation, CI success, broader runtime compatibility or performance improvement
+without executing the relevant checks and recording their results.
 
 Do not weaken tools/patch_engine.py blob checks. Upstream revisions are pinned in
 that file and upstream/manifest.json. Change them only after source/API review.
