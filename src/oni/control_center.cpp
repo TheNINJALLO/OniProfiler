@@ -426,7 +426,7 @@ void ControlCenter::incident()
     if (options_.automatic_profiles && writer_.diskMeasured()
         && writer_.profileBytes()<static_cast<std::uint64_t>(options_.automatic_storage_limit_mb)*1048576ULL) {
         const auto s=app_.profilerService().oniStatus();
-        if (!s.exporting && (!s.running || s.background)) start(plugin_.getServer().getConsoleSender(),presets()[1],true);
+        if (!s.exporting && (!s.running || s.background)) start(plugin_.getServer().getCommandSender(),presets()[1],true);
     }
 }
 void ControlCenter::tick(double mspt)
@@ -553,7 +553,7 @@ void ControlCenter::processRemote()
     const auto policy=remoteRejection(c,instance_id_,unixMs(),options_.remote_controls_enabled,options_.remote_management_enabled);
     if(!policy.empty()){reject(policy);return;}
     try{
-        auto &console=plugin_.getServer().getConsoleSender();
+        auto &console=plugin_.getServer().getCommandSender();
         auto &service=app_.profilerService();
         auto session=service.oniStatus();
         if(c.action=="record"){
