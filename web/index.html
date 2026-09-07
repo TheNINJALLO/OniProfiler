@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>OniProfiler | Private report viewer</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">O</span><div><strong>OniProfiler</strong><small>powered by spark</small></div></div>
+    <span class="privacy-pill">LOCAL FILES ONLY</span>
+  </header>
+  <main>
+    <section class="intro"><p class="eyebrow">PERFORMANCE, WITHOUT THE GUESSWORK</p><h1>From slow ticks<br>to a clearer picture.</h1><p>Review server measurements, inspect loaded areas, and compare investigations. Your report files stay in this browser.</p></section>
+    <section id="dropzone" class="import-panel" aria-labelledby="import-title">
+      <div><h2 id="import-title">Open your investigation</h2><p>Choose <code>dashboard.json</code> or <code>report-*.json</code> from <code>plugins/oniprofiler/reports/</code>.</p><p class="muted">This is an offline snapshot viewer, not a live connection to your server.</p></div>
+      <div class="import-actions"><label class="button primary" for="files">Choose report files</label><input id="files" type="file" accept=".json,application/json" multiple><button id="demo" class="button secondary">Explore a labeled demo</button></div>
+    </section>
+    <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+    <section id="workspace" hidden>
+      <div class="report-bar"><div><label for="active-report">INVESTIGATION</label><select id="active-report"></select></div><p id="snapshot-age" class="muted"></p><button id="clear" class="button secondary">Clear imported files</button></div>
+      <p id="demo-warning" class="notice" hidden>DEMONSTRATION DATA. These numbers are synthetic and are not readings from your server.</p>
+      <nav class="tabs" role="tablist" aria-label="Report views">
+        <button role="tab" aria-selected="true" aria-controls="overview" id="tab-overview" data-tab="overview">Overview</button>
+        <button role="tab" aria-selected="false" aria-controls="areas" id="tab-areas" data-tab="areas" tabindex="-1">Busy areas</button>
+        <button role="tab" aria-selected="false" aria-controls="reports" id="tab-reports" data-tab="reports" tabindex="-1">Native reports</button>
+        <button role="tab" aria-selected="false" aria-controls="compare" id="tab-compare" data-tab="compare" tabindex="-1">Compare</button>
+      </nav>
+      <section id="overview" class="tab-panel" role="tabpanel" aria-labelledby="tab-overview">
+        <div id="metrics" class="metrics"></div>
+        <div class="overview-grid"><section class="panel"><p class="eyebrow">WHAT THE MEASUREMENTS SAY</p><h2>Read the evidence</h2><div id="findings"></div></section><section class="panel"><p class="eyebrow">RECORDING DETAILS</p><h2 id="recording-title">Snapshot</h2><div id="recording-details"></div></section></div>
+        <section class="panel chart-panel"><div class="section-heading"><div><p class="eyebrow">RECENT MEASUREMENTS</p><h2>Mean tick duration</h2></div><span class="muted">Rolling snapshots, not individual ticks</span></div><canvas id="history-chart" width="1100" height="260" aria-label="Mean tick duration over available snapshots" role="img"></canvas><p id="chart-description" class="muted"></p></section>
+        <details class="panel"><summary>What this report cannot tell you</summary><div id="limitations"></div></details>
+      </section>
+      <section id="areas" class="tab-panel" role="tabpanel" aria-labelledby="tab-areas" hidden>
+        <div class="panel"><p class="eyebrow">INVESTIGATION LEADS, NOT A BLAME LIST</p><h2>Busy loaded areas</h2><p id="area-age" class="muted"></p><p>Entity counts are not per-chunk CPU timings. A dense area can be inexpensive; a small area can be expensive. This inspector does not load chunks.</p><div class="filters"><label>Dimension<select id="dimension"></select></label><label>Entity type or coordinates<input id="area-search" type="search" placeholder="villager, item, or chunk coordinates"></label></div><div class="table-scroll"><table><thead><tr><th>Dimension</th><th>Chunk X / Z</th><th>Block range X / Z</th><th>Entities</th><th>Entity types</th></tr></thead><tbody id="area-rows"></tbody></table></div><p id="area-count" class="muted"></p></div>
+      </section>
+      <section id="reports" class="tab-panel" role="tabpanel" aria-labelledby="tab-reports" hidden><div class="panel"><p class="eyebrow">KEEP THE FULL DETAIL</p><h2>Native Spark reports</h2><p>Native <code>.sparkprofile</code> files use Spark's advanced viewer. These history entries are references, not embedded profiles. Review server metadata before sharing or using an external service.</p><p class="muted">Locations and URLs are displayed as text, never opened automatically. A history entry does not prove the file or URL still exists.</p><div id="native-reports"></div></div></section>
+      <section id="compare" class="tab-panel" role="tabpanel" aria-labelledby="tab-compare" hidden><div class="panel"><p class="eyebrow">CHANGE ONE THING. MEASURE AGAIN.</p><h2>Compare two snapshots</h2><p>Import at least two files. This compares the reported rolling windows, not full-session average tick costs.</p><div class="filters"><label>Baseline A<select id="compare-a"></select></label><label>Candidate B<select id="compare-b"></select></label></div><div id="compare-warnings"></div><div id="compare-results" class="metrics"></div></div></section>
+    </section>
+  </main>
+  <footer><strong>OniProfiler</strong> powered by spark · TheN1NJ4LL0 project<br><span>Native engine: EndstoneMC/spark. Profile format and advanced viewer: lucko/spark. Independent project, not an upstream endorsement.</span></footer>
+</body>
+</html>

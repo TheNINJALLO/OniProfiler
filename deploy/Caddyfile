@@ -1,0 +1,8 @@
+{$ONI_HOSTNAME} {
+    # Do not enable access logs containing expiring share-token URLs.
+    encode zstd gzip
+    request_body {
+        max_size 65MB
+    }
+    reverse_proxy dashboard:8080
+}

@@ -1,0 +1,182 @@
+OniProfiler 1.0.0-rc.1 authoring-environment test evidence.
+Native configuration failure is retained, not presented as success.
+
+
+===== oni-ctest-final.log =====
+Internal ctest changing into directory: /mnt/data/oni-portable
+Test project /mnt/data/oni-portable
+    Start 1: oni_domain
+1/5 Test #1: oni_domain .......................   Passed    0.00 sec
+    Start 2: oni_python_tools
+2/5 Test #2: oni_python_tools .................   Passed   10.85 sec
+    Start 3: oni_web_data
+3/5 Test #3: oni_web_data .....................   Passed    0.10 sec
+    Start 4: oni_bridge
+4/5 Test #4: oni_bridge .......................   Passed    1.06 sec
+    Start 5: oni_runtime_sdk
+5/5 Test #5: oni_runtime_sdk ..................   Passed    0.10 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Total Test time (real) =  12.11 sec
+
+
+===== oni-python-final.log =====
+test_agent_to_api_integration (test_control.ApiTests.test_agent_to_api_integration) ... ok
+test_api_body_size_limit (test_control.ApiTests.test_api_body_size_limit) ... ok
+test_backup_and_retention (test_control.ApiTests.test_backup_and_retention) ... ok
+test_bad_runtime_statistics (test_control.ApiTests.test_bad_runtime_statistics) ... ok
+test_command_receipt_lifecycle (test_control.ApiTests.test_command_receipt_lifecycle) ... ok
+test_cookie_csp_and_static_assets (test_control.ApiTests.test_cookie_csp_and_static_assets) ... ok
+test_csrf_and_cross_origin (test_control.ApiTests.test_csrf_and_cross_origin) ... ok
+test_disable_revokes_sessions_and_pending (test_control.ApiTests.test_disable_revokes_sessions_and_pending) ... ok
+test_login_rate_limit (test_control.ApiTests.test_login_rate_limit) ... ok
+test_operator_and_local_management_gate (test_control.ApiTests.test_operator_and_local_management_gate) ... ok
+test_pending_limit (test_control.ApiTests.test_pending_limit) ... ok
+test_profile_upload_and_download (test_control.ApiTests.test_profile_upload_and_download) ... ok
+test_redacted_share_expiry_and_revoke (test_control.ApiTests.test_redacted_share_expiry_and_revoke) ... ok
+test_report_path_injection_and_other_agent (test_control.ApiTests.test_report_path_injection_and_other_agent) ... ok
+test_reports_idempotence_notes_compare (test_control.ApiTests.test_reports_idempotence_notes_compare) ... ok
+test_runtime_key_is_scoped_write_only (test_control.ApiTests.test_runtime_key_is_scoped_write_only) ... ok
+test_secure_cookie_for_https (test_control.ApiTests.test_secure_cookie_for_https) ... ok
+test_server_scoping (test_control.ApiTests.test_server_scoping) ... ok
+test_stale_telemetry_disables_actions (test_control.ApiTests.test_stale_telemetry_disables_actions) ... ok
+test_stop_requires_exact_owned_session (test_control.ApiTests.test_stop_requires_exact_owned_session) ... ok
+test_token_rotation_revokes_old_agent (test_control.ApiTests.test_token_rotation_revokes_old_agent) ... ok
+test_viewer_cannot_control (test_control.ApiTests.test_viewer_cannot_control) ... ok
+test_bad_weights_rejected (test_control.NativeAnalysisTests.test_bad_weights_rejected) ... ok
+test_bounded_decompression (test_control.NativeAnalysisTests.test_bounded_decompression) ... ok
+test_cycle_rejected (test_control.NativeAnalysisTests.test_cycle_rejected) ... ok
+test_gzip_and_allocation_units (test_control.NativeAnalysisTests.test_gzip_and_allocation_units) ... ok
+test_human_receipt_basename (test_control.NativeAnalysisTests.test_human_receipt_basename) ... ok
+test_invalid_profiles (test_control.NativeAnalysisTests.test_invalid_profiles) ... ok
+test_self_weights_not_double_counted (test_control.NativeAnalysisTests.test_self_weights_not_double_counted) ... ok
+test_bad_identifiers (test_control.ProtocolTests.test_bad_identifiers) ... ok
+test_command_allowlist (test_control.ProtocolTests.test_command_allowlist) ... ok
+test_comparison_zero_and_workload (test_control.ProtocolTests.test_comparison_zero_and_workload) ... ok
+test_https_and_origin_validation (test_control.ProtocolTests.test_https_and_origin_validation) ... ok
+test_invalid_snapshot (test_control.ProtocolTests.test_invalid_snapshot) ... ok
+test_json_limits (test_control.ProtocolTests.test_json_limits) ... ok
+test_native_wire_contract (test_control.ProtocolTests.test_native_wire_contract) ... ok
+test_password_and_invalid_length (test_control.ProtocolTests.test_password_and_invalid_length) ... ok
+test_share_allowlist (test_control.ProtocolTests.test_share_allowlist) ... ok
+test_valid_missing_measurements (test_control.ProtocolTests.test_valid_missing_measurements) ... ok
+test_wire_is_fixed_ascii (test_control.ProtocolTests.test_wire_is_fixed_ascii) ... ok
+test_async_preserves_return_and_errors (test_control.SdkTests.test_async_preserves_return_and_errors) ... ok
+test_atomic_file_and_lock (test_control.SdkTests.test_atomic_file_and_lock) ... ok
+test_callback_cardinality_bounded (test_control.SdkTests.test_callback_cardinality_bounded) ... ok
+test_python_return_exception_and_elapsed (test_control.SdkTests.test_python_return_exception_and_elapsed) ... ok
+test_symlink_file_refused (test_control.SdkTests.test_symlink_file_refused) ... ok
+test_finished_process_is_untouched (test_release.LauncherTests.test_finished_process_is_untouched) ... ok
+test_posix_uses_graceful_group_signal (test_release.LauncherTests.test_posix_uses_graceful_group_signal) ... ok
+test_windows_uses_console_break_not_terminate (test_release.LauncherTests.test_windows_uses_console_break_not_terminate) ... ok
+test_checksum_manifest (test_release.ReleaseTests.test_checksum_manifest) ... ok
+test_combined_source_files_included (test_release.ReleaseTests.test_combined_source_files_included) ... ok
+test_exporter_lifecycle (test_release.ReleaseTests.test_exporter_lifecycle) ... ok
+test_exporter_validation (test_release.ReleaseTests.test_exporter_validation) ... ok
+test_native_checks_and_artifacts (test_release.ReleaseTests.test_native_checks_and_artifacts) ... ok
+test_native_magic_and_architecture (test_release.ReleaseTests.test_native_magic_and_architecture) ... ok
+test_native_platform_matrix (test_release.ReleaseTests.test_native_platform_matrix) ... ok
+test_no_secrets_in_deployment_defaults (test_release.ReleaseTests.test_no_secrets_in_deployment_defaults) ... ok
+test_private_and_build_files_excluded (test_release.ReleaseTests.test_private_and_build_files_excluded) ... ok
+test_release_is_gated_and_draft (test_release.ReleaseTests.test_release_is_gated_and_draft) ... ok
+test_toolchain_verification (test_release.ReleaseTests.test_toolchain_verification) ... ok
+test_versions (test_release.ReleaseTests.test_versions) ... ok
+test_default_publish_is_private (test_tools.DistributionTests.test_default_publish_is_private) ... ok
+test_dry_run_has_no_writes (test_tools.DistributionTests.test_dry_run_has_no_writes) ... ok
+test_file_allowlist (test_tools.DistributionTests.test_file_allowlist) ... ok
+test_native_package_refuses_missing_binary (test_tools.DistributionTests.test_native_package_refuses_missing_binary) ... ok
+test_owner_validation (test_tools.DistributionTests.test_owner_validation) ... ok
+test_public_requires_explicit_flag (test_tools.DistributionTests.test_public_requires_explicit_flag) ... ok
+test_source_archive_excludes_builds (test_tools.DistributionTests.test_source_archive_excludes_builds) ... ok
+test_symlink_not_published (test_tools.DistributionTests.test_symlink_not_published) ... ok
+test_ambiguous_patch_rejected (test_tools.PatchTests.test_ambiguous_patch_rejected) ... ok
+test_engine_public_access_is_structured (test_tools.PatchTests.test_engine_public_access_is_structured) ... ok
+test_git_blob_hash (test_tools.PatchTests.test_git_blob_hash) ... ok
+test_malformed_utf8 (test_tools.PatchTests.test_malformed_utf8) ... ok
+test_patch_and_idempotence (test_tools.PatchTests.test_patch_and_idempotence) ... ok
+test_pins_are_consistent (test_tools.PatchTests.test_pins_are_consistent) ... ok
+test_unrelated_change_rejected (test_tools.PatchTests.test_unrelated_change_rejected) ... ok
+test_assets_have_exact_hashes (test_tools.ViewerBundleTests.test_assets_have_exact_hashes) ... ok
+test_scripts_follow_the_document (test_tools.ViewerBundleTests.test_scripts_follow_the_document) ... ok
+test_standalone_has_no_external_assets (test_tools.ViewerBundleTests.test_standalone_has_no_external_assets) ... ok
+
+----------------------------------------------------------------------
+Ran 78 tests in 9.437s
+
+OK
+
+
+===== oni-sanitizer-final.log =====
+Passed 85 C++ checks. No BDS runtime was used.
+29 bridge checks passed
+
+
+===== oni-dashboard-final.log =====
+Passed 58 live-dashboard DOM checks at desktop and mobile sizes with synthetic mocked API responses; no network requests. Real API behavior is tested separately.
+
+
+===== oni-offline-ui-final.log =====
+Passed 34 browser smoke checks across desktop and mobile viewports. No external requests observed.
+
+
+===== oni-http-final.log =====
+Passed 15 real loopback HTTP checks using the service, outbound agent and synthetic plugin files. No BDS process was used.
+
+
+===== oni-wheel-build.log =====
+WARNING: The directory '/home/oai/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing ./controlplane
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: oniprofiler-control
+  Building wheel for oniprofiler-control (pyproject.toml): started
+  Building wheel for oniprofiler-control (pyproject.toml): finished with status 'done'
+  Created wheel for oniprofiler-control: filename=oniprofiler_control-1.0.0rc1-py3-none-any.whl size=65074 sha256=b507cb5f499586613d9ff54ff8923c3aba5c73bb45103664cf636683fb8f85b5
+  Stored in directory: /tmp/pip-ephem-wheel-cache-_bhp65sn/wheels/22/5e/2b/159fbe4097e87aa88bf69ac85fbdacd3d6804288ffff86004f
+Successfully built oniprofiler-control
+
+
+===== oni-native-attempt.log =====
+Actual full native configuration attempt. No native artifact is claimed.
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found Python3: /opt/pyvenv/bin/python3 (found version "3.13.5") found components: Interpreter
+[ 11%] Creating directories for 'spark_engine-populate'
+[ 22%] Performing download step (git clone) for 'spark_engine-populate'
+Cloning into 'spark_engine-src'...
+fatal: unable to access 'https://github.com/EndstoneMC/spark.git/': Could not resolve host: github.com
+Cloning into 'spark_engine-src'...
+fatal: unable to access 'https://github.com/EndstoneMC/spark.git/': Could not resolve host: github.com
+Cloning into 'spark_engine-src'...
+fatal: unable to access 'https://github.com/EndstoneMC/spark.git/': Could not resolve host: github.com
+Had to git clone more than once: 3 times.
+CMake Error at spark_engine-subbuild/spark_engine-populate-prefix/tmp/spark_engine-populate-gitclone.cmake:50 (message):
+  Failed to clone repository: 'https://github.com/EndstoneMC/spark.git'
+
+
+gmake[2]: *** [CMakeFiles/spark_engine-populate.dir/build.make:102: spark_engine-populate-prefix/src/spark_engine-populate-stamp/spark_engine-populate-download] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/spark_engine-populate.dir/all] Error 2
+gmake: *** [Makefile:91: all] Error 2
+
+CMake Error at /usr/share/cmake-3.31/Modules/FetchContent.cmake:1918 (message):
+  Build step for spark_engine failed: 2
+Call Stack (most recent call first):
+  /usr/share/cmake-3.31/Modules/FetchContent.cmake:1609 (__FetchContent_populateSubbuild)
+  /usr/share/cmake-3.31/Modules/FetchContent.cmake:2145:EVAL:2 (__FetchContent_doPopulation)
+  /usr/share/cmake-3.31/Modules/FetchContent.cmake:2145 (cmake_language)
+  /usr/share/cmake-3.31/Modules/FetchContent.cmake:2384 (__FetchContent_Populate)
+  CMakeLists.txt:53 (FetchContent_MakeAvailable)
+
+
+-- Configuring incomplete, errors occurred!
+
+Configuration return code: 1
+

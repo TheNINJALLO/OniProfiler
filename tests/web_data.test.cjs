@@ -1,0 +1,25 @@
+/* SPDX-License-Identifier: GPL-3.0-only */
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const data = require('../web/data.js');
+const base = () => ({schema_version:1,product:'OniProfiler powered by spark',kind:'health',generated_ms:1000,health:{history_ms:10000,tick_samples:200,mspt_span_ms:10000,tps:20,mspt_mean:30,players:5}});
+test('Valid report preserves measured values',()=>assert.equal(data.validate(base()).health.tps,20));
+test('Missing metric stays null, never zero',()=>assert.equal(data.validate(base()).health.entities,null));
+test('Measured zero remains zero',()=>{const x=base();x.health.entities=0;assert.equal(data.validate(x).health.entities,0);});
+test('Nonfinite metric becomes unavailable',()=>{const x=base();x.health.tps=Infinity;assert.equal(data.validate(x).health.tps,null);});
+test('Numeric strings do not become invented measurements',()=>{const x=base();x.health.tps='20';assert.equal(data.validate(x).health.tps,null);});
+test('Unknown schema rejected',()=>{const x=base();x.schema_version=2;assert.throws(()=>data.validate(x));});
+test('Native or unrelated JSON rejected',()=>assert.throws(()=>data.validate({sampler:true})));
+test('Invalid report kind rejected',()=>{const x=base();x.kind='remote-command';assert.throws(()=>data.validate(x));});
+test('Missing health rejected',()=>{const x=base();delete x.health;assert.throws(()=>data.validate(x));});
+test('Malformed arrays are contained',()=>{const x=base();x.findings={bad:true};x.native_reports=[null,2,'x'];assert.deepEqual(data.validate(x).native_reports,[]);assert.deepEqual(data.validate(x).findings,[]);});
+test('Findings levels are constrained',()=>{const x=base();x.findings=[{level:'<script>',detail:'<img src=x onerror=alert(1)>'}];const parsed=data.validate(x);assert.equal(parsed.findings[0].level,'unknown');assert.equal(parsed.findings[0].detail,'<img src=x onerror=alert(1)>');});
+test('Lists and text have limits',()=>{const x=base();x.findings=Array.from({length:300},()=>({title:'a'.repeat(1000)}));const y=data.validate(x);assert.equal(y.findings.length,30);assert.equal(y.findings[0].title.length,200);});
+test('Prototype keys are not assigned into objects',()=>{const x=base();x.loaded_areas={areas:[{types:JSON.parse('{"__proto__":3,"minecraft:item":10}')} ]};const y=data.validate(x);assert.equal({}.polluted,undefined);assert.equal(y.loaded_areas.areas[0].types[0].name,'__proto__');});
+test('Negative chunk coordinates preserved',()=>{const x=base();x.loaded_areas={areas:[{chunk_x:-3,chunk_z:-1}]};assert.equal(data.validate(x).loaded_areas.areas[0].chunk_x,-3);});
+test('Comparison reports workload mismatch',()=>{const a=data.validate(base()),b=data.validate(base());b.health.players=10;assert.ok(data.compatibility(a,b).some(s=>s.includes('Player counts')));});
+test('Comparison reports native setting mismatch',()=>{const a=data.validate(base()),b=data.validate(base());a.recording={mode:'allocation',interval:4};b.recording={mode:'execution',interval:10,dropped_samples:2};assert.ok(data.compatibility(a,b).some(s=>s.includes('mode')));assert.ok(data.compatibility(a,b).some(s=>s.includes('dropped')));});
+test('Demo reports never silently look like real comparisons',()=>{const a=data.validate(base()),b=data.validate(base());a.demo=true;assert.ok(data.compatibility(a,b).some(s=>s.includes('demonstration')));});
+test('No divide by zero baseline',()=>assert.deepEqual(data.delta(0,2),{absolute:2,percent:null}));
+test('Delta missing value remains unavailable',()=>assert.equal(data.delta(null,0),null));
+test('Delta uses measured values',()=>assert.deepEqual(data.delta(100,50),{absolute:-50,percent:-50}));

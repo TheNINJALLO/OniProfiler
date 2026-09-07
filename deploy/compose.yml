@@ -1,0 +1,39 @@
+name: oniprofiler
+services:
+  dashboard:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      ONI_PUBLIC_ORIGIN: https://${ONI_HOSTNAME:?Set ONI_HOSTNAME to your dashboard hostname}
+      ONI_DATA_DIR: /data
+    volumes:
+      - oni-data:/data
+    expose:
+      - "8080"
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      ONI_HOSTNAME: ${ONI_HOSTNAME:?Set ONI_HOSTNAME}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      dashboard:
+        condition: service_healthy
+volumes:
+  oni-data:
+  caddy-data:
+  caddy-config:

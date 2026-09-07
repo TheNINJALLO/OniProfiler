@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oniprofiler-control"
+version = "1.0.0rc1"
+description = "Private multi-server control plane and outbound agent for OniProfiler powered by spark"
+requires-python = ">=3.11"
+license = {text = "GPL-3.0-only"}
+authors = [{name = "TheN1NJ4LL0"}]
+dependencies = ["fastapi==0.128.2", "uvicorn==0.48.0", "httpx==0.28.1"]
+
+[project.optional-dependencies]
+test = ["PyYAML==6.0.3"]
+
+[project.scripts]
+oniprofiler-server = "oniprofiler_control.server:main"
+oniprofiler-agent = "oniprofiler_control.agent:main"
+oniprofiler-admin = "oniprofiler_control.cli:main"
+oniprofiler-launch = "oniprofiler_control.launcher:main"
+
+[tool.setuptools]
+license-files = ["LICENSE", "NOTICE"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["oniprofiler_control*"]
+
+[tool.setuptools.package-data]
+oniprofiler_control = ["static/*.html", "static/*.css", "static/*.js"]

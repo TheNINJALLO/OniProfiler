@@ -1,0 +1,22 @@
+[Unit]
+Description=OniProfiler private dashboard
+After=network-online.target
+
+[Service]
+User=oniprofiler
+Group=oniprofiler
+WorkingDirectory=/opt/oniprofiler
+Environment=ONI_DATA_DIR=/var/lib/oniprofiler
+Environment=ONI_PUBLIC_ORIGIN=https://profiler.example.com
+ExecStart=/opt/oniprofiler/venv/bin/oniprofiler-server --host 127.0.0.1 --port 8080
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/oniprofiler
+
+[Install]
+WantedBy=multi-user.target

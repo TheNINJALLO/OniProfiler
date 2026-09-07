@@ -1,0 +1,19 @@
+dashboard_url = "https://profiler.example.com"
+plugin_dir = "/srv/bedrock/plugins/oniprofiler"
+state_dir = "/srv/bedrock/.oniprofiler-agent"
+# The file contains only the one-time agent token. On Linux: chmod 600.
+token_file = "/srv/bedrock/.oniprofiler-agent-token"
+poll_seconds = 5
+sync_reports = true
+analyze_native_profiles = true
+# Native profiles can contain names, paths and server metadata. Explicit opt-in.
+sync_native_profiles = false
+allow_http_loopback = false
+# Optional private certificate authority PEM file. Verification is never disabled.
+ca_bundle = ""
+# Only point this at the GAME SERVER'S cgroup v2 directory, not an unrelated agent container.
+cgroup_path = ""
+# Optional Pterodactyl resources only. This does not grant console command execution.
+panel_url = ""
+panel_server = ""
+panel_token_env = "ONI_PANEL_TOKEN"

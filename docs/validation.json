@@ -1,0 +1,28 @@
+{
+  "product": "OniProfiler powered by spark",
+  "version": "1.0.0-rc.1",
+  "date": "2026-09-07",
+  "delivery": "combined release-candidate source and built Python wheel",
+  "native_plugin_built": false,
+  "github_workflow_executed": false,
+  "bds_runtime_tested": false,
+  "passed": {
+    "cpp_domain_checks": 85,
+    "cpp_bridge_checks": 29,
+    "python_tests": 78,
+    "javascript_tests": 28,
+    "offline_browser_checks": 34,
+    "dashboard_dom_checks": 58,
+    "http_smoke_checks": 15,
+    "ctest_suites": 5,
+    "asan_ubsan": true,
+    "wheel_build_install_smoke": true
+  },
+  "browser_scope": "Actual assets; explicit synthetic mocked API for dashboard DOM. Real HTTP service/agent tested separately. Browser navigation was blocked.",
+  "native_configuration_result": "Failed dependency fetch: container DNS could not resolve github.com",
+  "runtime_environment": {
+    "python": "3.13.5",
+    "cpp_compiler": "GCC 14.2.0",
+    "playwright": "1.57.0"
+  }
+}

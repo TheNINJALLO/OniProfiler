@@ -1,0 +1,16 @@
+# Staging release gate
+
+Record the actual artifact SHA-256, operating system, architecture, BDS build and Endstone/Onistone build for every run. A matching API major alone does not establish native ABI compatibility.
+
+1. Run both native CI jobs successfully. Confirm the expected plugin entry point, dependency linkage and matching source packages. Install exactly one profiler on a disposable staging world and confirm load/unload and clean shutdown.
+2. Exercise `/oniprofiler` on a Bedrock client, not just console tests: each form, permission-denied path, abandoned form, disconnect, concurrent administrator and changed-session action. Verify timers, manual stop, timeout, discard and background resumption. Confirm exported native files reopen in the advanced Spark viewer.
+3. Compare measured health with independently observed tick timing. Test startup warmup, zero players, paused/unavailable statistics, sustained lag, cooldowns and optional automatic recordings. Confirm incident claims reflect captured evidence, not invented pre-incident stacks.
+4. Inspect only loaded areas across dimensions. Confirm snapshot age, filters, chunk coordinate ranges, baseline comparisons and unloaded-area behavior. Measure scan duration and its effect on ticks. No diagnostic action should load the entire saved world or remove entities.
+5. Start the private dashboard behind real HTTPS. Create viewer/operator/manager accounts scoped to different servers. Verify access isolation, session expiry, disabled users, token rotation, invalid CSRF, wrong Host and login throttling. Verify no credential or share-token access logs.
+6. Run the agent with real files. Test offline/reconnect, duplicate delivery, expired requests, plugin restart between request and execution, actor mismatch, recording-owner changes, disk-full and clean/abrupt shutdown. Confirm receipts distinguish queued, applied, failed and indeterminate; never assume a requested export completed.
+7. Save notes, compare like-for-like and mismatched reports, download a private JSON/native profile, create a default-redacted share and a coordinate-approved share, expire/revoke them and check the API directly. Test retention, native quota and backup/restore including raw profile files.
+8. Instrument an actual Python callback and Node/BDS callback deliberately. Check return values, exceptions, async behavior, total/max/count statistics and export-worker shutdown. Validate the experimental BDS module versions and SecretString header against the installed server. Measure instrumentation overhead. Do not infer uninstrumented plugin coverage.
+9. Test optional cgroup context against the actual game container, Pterodactyl resource requests, Discord errors/rate limits and the startup wrapper with the real loader. Deliberately kill the agent and confirm the server continues. Test both Windows and Linux process lifecycles separately.
+10. Run controlled workload A/B measurements with and without profiling, keeping players, loaded chunks, workload and duration comparable. Record latency distributions, memory growth and capture/drop rates. Set operational limits based on those results before production deployment.
+
+Outstanding failures belong in VALIDATION.md with logs. Do not publish the draft prerelease as stable until these gates have evidence.

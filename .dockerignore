@@ -1,0 +1,13 @@
+**/.git
+**/.venv
+**/__pycache__
+**/*.egg-info
+**/node_modules
+**/secrets
+**/.env*
+**/*.sqlite3*
+**/oni-data
+**/agent-state
+**/build
+**/dist
+.conan2

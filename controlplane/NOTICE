@@ -1,0 +1,29 @@
+OniProfiler powered by spark
+OniProfiler additions: 2026, TheN1NJ4LL0 project / TheNINJALLO and contributors.
+
+Native profiling engine and Endstone adapters:
+  EndstoneMC/spark, upstream author ReallocAll and contributors.
+  Source: https://github.com/EndstoneMC/spark
+  Inspected revision: 8958173ad40c1da9adf3254305526443c9853848 (0.5.3).
+  License: GNU General Public License version 3. Preserve upstream notices.
+
+Spark profile ecosystem and advanced viewer:
+  lucko/spark and its contributors: https://github.com/lucko/spark
+  Viewer: https://spark.lucko.me/
+
+Endstone public API headers:
+  The Endstone Project, Apache License 2.0; retain its copyright and license.
+  https://github.com/EndstoneMC/endstone
+
+Optional PlaceholderAPI integration:
+  EndstoneMC/papi. Its headers and license remain in the dependency source.
+  https://github.com/EndstoneMC/papi
+
+OniProfiler is an independent project. The phrase "powered by spark" credits the
+upstream engine and does not imply endorsement by EndstoneMC or Spark authors.
+The native engine is not presented as original OniProfiler work.
+
+This source release candidate fetches the pinned native project during configuration.
+Native CI packages must be distributed with the matching dependency-source ZIP.
+Dependency recipes and versions are in conanfile.py. Preserve the notices and
+license texts of all linked dependencies when redistributing native builds.

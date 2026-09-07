@@ -1,0 +1,22 @@
+[Unit]
+Description=OniProfiler outbound monitoring agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=bedrock
+Group=bedrock
+WorkingDirectory=/srv/bedrock
+ExecStart=/opt/oniprofiler/venv/bin/oniprofiler-agent --config /srv/bedrock/agent.toml
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/bedrock/plugins/oniprofiler /srv/bedrock/.oniprofiler-agent
+
+[Install]
+WantedBy=multi-user.target

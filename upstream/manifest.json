@@ -1,0 +1,14 @@
+{
+  "spark_repository": "https://github.com/EndstoneMC/spark",
+  "spark_commit": "8958173ad40c1da9adf3254305526443c9853848",
+  "spark_version": "0.5.3",
+  "endstone_repository": "https://github.com/EndstoneMC/endstone",
+  "endstone_commit": "8f84d6f5b556916597ed5b6b71329b2ed3ca8fc8",
+  "endstone_release": "0.11.10",
+  "papi_repository": "https://github.com/EndstoneMC/papi",
+  "papi_commit": "3bc3dbf99010e7af09b967d913b5b6a7e182e989",
+  "integration": "tools/patch_engine.py; content-verified, fail-closed",
+  "license": "GPL-3.0-only",
+  "checked_on": "2026-09-07",
+  "runtime_tested": false
+}

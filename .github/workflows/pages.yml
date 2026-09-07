@@ -1,0 +1,30 @@
+name: Publish offline viewer to Pages
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  viewer:
+    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v5
+      - name: Stage only the static viewer
+        run: |
+          mkdir -p public
+          cp web/index.html web/data.js web/app.js web/styles.css public/
+          cp LICENSE NOTICE public/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - name: Deploy viewer
+        id: deployment
+        uses: actions/deploy-pages@v4
