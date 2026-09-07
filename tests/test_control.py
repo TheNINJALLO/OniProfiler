@@ -15,7 +15,7 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'controlplane'))
 from fastapi.testclient import TestClient
-from oniprofiler_control.config import Settings
+from oniprofiler_control.config import Settings,canonical_origin
 from oniprofiler_control.security import now_ms,password_hash,password_matches,valid_id,valid_name
 from oniprofiler_control.protocol import bounded_json,encode_command,validate_snapshot,compare_reports,redact_for_share
 from oniprofiler_control.server import create_app
@@ -28,7 +28,7 @@ PASSWORD='a-long-test-password-not-for-production'
 ORIGIN='http://127.0.0.1:8080'
 
 def snapshot(**overrides):
-    result={'schema_version':1,'product':'OniProfiler powered by spark','version':'1.0.0','kind':'health',
+    result={'schema_version':1,'product':'OniProfiler powered by spark','version':'1.0.1','kind':'health',
         'instance_id':'b'*32,'generated_ms':now_ms(),'health':{'tps':19.8,'mspt_mean':24.1,'mspt_p95':48.2,'mspt_max':67,'rss_bytes':2048,'players':4,'entities':20,'chunks':4,'tick_samples':200},
         'capabilities':{'remote_controls':True,'remote_management':True},'session':{'running':False,'background':False,'started_ms':0,'owner':''},
         'loaded_areas':{'snapshot_ms':now_ms(),'areas':[{'dimension':'overworld','chunk_x':-4,'chunk_z':2,'entities':20,'types':{'minecraft:cow':20}}]},
@@ -94,6 +94,7 @@ class ProtocolTests(unittest.TestCase):
         for value in ('http://public.example','https://user:pass@example.com','https://example.com/path','https://example.com?q=1','ftp://localhost'):
             with self.subTest(value=value),self.assertRaises(ValueError):validate_origin(value,True)
         self.assertEqual(validate_origin(ORIGIN,True),ORIGIN)
+        self.assertEqual(canonical_origin('HTTPS://Profiler.Example:443/'),'https://profiler.example')
         with tempfile.TemporaryDirectory() as d,self.assertRaises(ValueError):Settings(Path(d),ORIGIN)
 
 class NativeAnalysisTests(unittest.TestCase):
@@ -140,7 +141,7 @@ class ApiTests(unittest.TestCase):
         for path in ('app.js','styles.css','share.js'):self.assertEqual(self.client.get('/static/'+path).status_code,200)
         self.assertEqual(self.client.get('/api/me').json()['username'],'Owner')
     def test_secure_cookie_for_https(self):
-        app=create_app(Settings(self.root/'secure','https://profiler.example'))
+        app=create_app(Settings(self.root/'secure','HTTPS://Profiler.Example:443/'))
         app.state.store.create_user('Admin',PASSWORD,True)
         with TestClient(app,base_url='https://profiler.example') as client:
             r=client.post('/api/login',json={'username':'Admin','password':PASSWORD},headers={'Origin':'https://profiler.example'})
@@ -177,6 +178,16 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.post('/api/agent/ack',json=receipt,headers=self.agent_headers).status_code,200)
         receipt['status']='error';self.client.post('/api/agent/ack',json=receipt,headers=self.agent_headers)
         self.assertEqual(self.store.commands(self.sid)[0]['status'],'applied')
+    def test_native_plugin_endpoints_need_no_agent_wheel(self):
+        queued=self.write(f'/api/servers/{self.sid}/commands',{'action':'health'});self.assertEqual(queued.status_code,202)
+        response=self.client.post('/api/native/heartbeat',content=json.dumps(snapshot()),headers={**self.agent_headers,'Content-Type':'application/json'})
+        self.assertEqual(response.status_code,200)
+        wire=dict(line.split('=',1) for line in response.text.strip().splitlines())
+        self.assertEqual((wire['id'],wire['action'],wire['preset'],wire['role']),(queued.json()['id'],'health','-','manager'))
+        report=self.client.post('/api/native/report/report-100-2.json',content=json.dumps(snapshot()),headers={**self.agent_headers,'Content-Type':'application/json'})
+        self.assertEqual(report.status_code,200);self.assertTrue(report.json()['created'])
+        duplicate=self.client.post('/api/native/report/report-100-2.json',content=json.dumps(snapshot()),headers=self.agent_headers)
+        self.assertEqual(duplicate.status_code,200);self.assertFalse(duplicate.json()['created'])
     def test_pending_limit(self):
         for _ in range(8):self.assertEqual(self.write(f'/api/servers/{self.sid}/commands',{'action':'health'}).status_code,202)
         self.assertEqual(self.write(f'/api/servers/{self.sid}/commands',{'action':'health'}).status_code,422)

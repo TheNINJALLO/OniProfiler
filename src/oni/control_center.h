@@ -13,6 +13,7 @@
 #include "platform/endstone/adapters.h"
 #include "oni/domain.h"
 #include "oni/command_bridge.h"
+#include "oni/dashboard_connector.h"
 #include "oni/options.h"
 #include "oni/report_writer.h"
 
@@ -71,6 +72,7 @@ private:
     Options options_;
     ReportWriter writer_;
     std::unique_ptr<CommandBridge> bridge_;
+    std::unique_ptr<DashboardConnector> dashboard_;
     std::string instance_id_;
     std::string remote_owner_;
     std::int64_t remote_session_ = 0;

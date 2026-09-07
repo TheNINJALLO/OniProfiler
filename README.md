@@ -2,7 +2,7 @@
 
 **Private performance investigations for Minecraft Bedrock servers.** A combined implementation of the in-game control center, investigation tools and live multi-server dashboard.
 
-Version: **1.0.0**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit recorded in `upstream/manifest.json`.
+Version: **1.0.1**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit recorded in `upstream/manifest.json`.
 
 > Release binaries are compiled and tested by GitHub Actions, and the corrected Linux native plugin has been confirmed to load on a live Endstone/BDS server. The complete integration and overhead checklist in [VALIDATION.md](VALIDATION.md) remains the boundary for production claims.
 
@@ -10,7 +10,7 @@ Version: **1.0.0**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit re
 
 **Need the plugin file?** Download the raw `endstone_oniprofiler.so` (Linux) or `endstone_oniprofiler.dll` (Windows) from the GitHub release. Put that one file directly in the server's `plugins/` directory and fully restart the server. Do not put the release ZIP or `oniprofiler_control-*.whl` in `plugins/`; the wheel is the optional dashboard service. See [INSTALL.md](INSTALL.md).
 
-**Need the live dashboard?** Follow [docs/DASHBOARD.md](docs/DASHBOARD.md). The Python distribution contains the API, responsive browser interface, outbound agent, local administrator tools and startup wrapper. The native plugin remains usable without the dashboard.
+**Need the live dashboard?** Follow [docs/DASHBOARD.md](docs/DASHBOARD.md). Install the Python distribution only on the central dashboard host. Each game server links directly from the native plugin over verified HTTPS; it does not need Python, a wheel, a startup wrapper or a second agent process.
 
 **Need callback attribution?** See [integrations/README.md](integrations/README.md). It is opt-in instrumentation, not an invisible rewrite of every installed plugin.
 
@@ -23,7 +23,7 @@ Version: **1.0.0**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit re
 | Incidents | Sustained thresholds, cooldowns, optional local profiling and reports. Background-resumption policy is explicit. |
 | Evidence | Missing data remains unavailable, sample windows are shown, comparisons warn about workload differences, and native protobuf summaries retain measurement/interpretation boundaries. |
 | Multi-server dashboard | Private login, fleet status, actual history, guided recordings, server-scoped roles, report notes/tags/comparisons, export and expiring redacted shares. |
-| Outbound agent | Verified HTTPS, local mailbox, exact boot/session checks, command expiry, acknowledgements, reconnect/backoff, report synchronization and optional raw-profile upload. |
+| Native dashboard link | Verified outbound HTTPS from the plugin, local mailbox isolation, exact boot/session checks, command expiry, acknowledgements, reconnect/backoff and JSON report synchronization. No Python install is needed on a game server. |
 | Runtime integrations | Python sync/async timing, JavaScript timing core, Node atomic-file exporter, and a BDS-only experimental HTTP publisher using a write-only runtime key. |
 | Hosting context | Optional explicitly selected cgroup v2 metrics, Pterodactyl resource readings, reduced Discord incident notices and a startup wrapper. |
 | Build and operations | GLIBC-compatible Linux and Windows native workflows, raw game-plugin downloads, application wheel, portable and API/UI tests, Docker Compose and systemd examples, gated releases and source/checksum packages. |
@@ -33,18 +33,16 @@ Version: **1.0.0**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit re
 ```text
 Bedrock + Endstone/Onistone
   OniProfiler C++ plugin (Spark native engine + forms + reports)
-       private local files and a bounded command mailbox
-  OniProfiler outbound Python agent
-       verified HTTPS, scoped token, no game-host listener
+       private files + bounded mailbox + native outbound HTTPS worker
   Private central API + SQLite + responsive dashboard
        viewer / operator / manager grants for each server
 ```
 
-Native profiling runs in-process. The dashboard is not hosted by the game-thread code. Disk report handling and remote networking use the dedicated writer/agent. Loaded-world inspection still touches server APIs on the server thread and must be benchmarked under your workload; no zero-overhead claim is made.
+Native profiling runs in-process. The dashboard is not hosted by the game-thread code. Disk report handling and remote networking use dedicated workers that receive no Endstone objects. Loaded-world inspection still touches server APIs on the server thread and must be benchmarked under your workload; no zero-overhead claim is made.
 
 ## Defaults that matter
 
-Remote control and remote management are **off** until enabled in the generated `oniprofiler.toml`. The dashboard has no default administrator password. A newly enrolled agent synchronizes private JSON reports; native file uploads are **off** until explicitly enabled. Shared reports redact location and identity information by default. There is no remote shell, arbitrary console endpoint, automatic entity purge or automatic plugin disabling.
+The dashboard link, remote control and remote management are **off** until enabled in the generated `oniprofiler.toml`. The dashboard has no default administrator password. The native link can synchronize private JSON reports; raw `.sparkprofile` upload remains an optional external-agent feature. Shared reports redact location and identity information by default. There is no remote shell, arbitrary console endpoint, automatic entity purge or automatic plugin disabling.
 
 The supplied offline HTML viewer is separate from the authenticated dashboard. It opens locally imported reports and a clearly labeled synthetic demo. The optional Pages workflow publishes only that offline viewer, never credentials or report folders.
 

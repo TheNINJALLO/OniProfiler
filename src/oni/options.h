@@ -2,14 +2,20 @@
 #pragma once
 #include <filesystem>
 #include <string>
+#include <string_view>
 namespace oni {
 struct Options {
     bool background_enabled = true;
+    bool dashboard_enabled = false;
+    bool dashboard_sync_reports = true;
     bool remote_controls_enabled = false;
     bool remote_management_enabled = false;
     bool incidents_enabled = true;
     bool automatic_profiles = false;
     bool allow_external_sharing = false;
+    std::string dashboard_url;
+    std::string dashboard_token;
+    int dashboard_poll_seconds = 5;
     int refresh_seconds = 5;
     int area_cooldown_seconds = 60;
     int max_areas = 200;

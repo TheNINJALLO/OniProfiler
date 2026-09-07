@@ -17,7 +17,7 @@ const stamp=Date.now();
 const user={id:'11111111111111111111111111111111',username:'demo-owner',is_admin:true,csrf:'synthetic-csrf'};
 const health={tps:19.83,tps_span_ms:10000,mspt_mean:28.5,mspt_p95:51.2,mspt_max:84.7,rss_bytes:3221225472,players:12,entities:864,chunks:176,tick_samples:200};
 const areas=[{dimension:'overworld',chunk_x:-12,chunk_z:8,entities:164,types:{'minecraft:villager':64,'minecraft:cow':100}},{dimension:'nether',chunk_x:4,chunk_z:-7,entities:82,types:{'minecraft:piglin':82}}];
-const base={schema_version:1,product:'OniProfiler powered by spark',version:'1.0.0',kind:'health',instance_id:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',generated_ms:stamp,health,
+const base={schema_version:1,product:'OniProfiler powered by spark',version:'1.0.1',kind:'health',instance_id:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',generated_ms:stamp,health,
  session:{running:false,background:false,exporting:false,started_ms:0,owner:''},
  findings:[{level:'warning',evidence:'measured',title:'SYNTHETIC DEMO DATA',detail:'Interface-test values only. This is not connected to a Minecraft server.'}],
  loaded_areas:{snapshot_ms:stamp,areas}};
@@ -119,7 +119,7 @@ def main():
             assert all(page.get_by_role('button',name='Start recording',exact=True).nth(i).is_disabled() for i in range(4));checks+=1
             page.locator('#server-select').select_option('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
             page.locator('[data-view=overview]').click()
-            page.get_by_text('Agent offline',exact=True).first.wait_for()
+            page.get_by_text('Link offline',exact=True).first.wait_for()
             assert 'Unavailable' in page.locator('.metrics').inner_text();checks+=1
             page.locator('#logout').click();page.locator('#login-view').wait_for(state='visible')
             assert page.locator('#content').inner_text()=='' and page.locator('#server-select option').count()==0;checks+=1

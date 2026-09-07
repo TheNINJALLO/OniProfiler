@@ -14,7 +14,7 @@ from project_files import project_files
 from build_viewer import bundle
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 
 MAX_LINUX_GLIBC = (2, 35)

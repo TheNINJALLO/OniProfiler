@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+Added the native outbound dashboard connector so Endstone servers no longer need the Python wheel or a separate agent process. Added automatic managed-config migration, HTTPS/token validation, bounded snapshot/report/receipt synchronization, server-link setup guidance, and canonical browser-origin handling for valid proxy deployments.
+
 ## 1.0.0
 
 Promoted the GLIBC-compatible rc.2 build after its raw Linux plugin was confirmed to load on a live Endstone/BDS server. Stable tags now create normal draft releases rather than prereleases; release-candidate tags retain prerelease status. Linux and Windows raw plugins remain direct, checksummed release assets.

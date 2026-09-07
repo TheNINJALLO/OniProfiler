@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 #include "oni/command_bridge.h"
+#include "oni/dashboard_connector.h"
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -26,6 +27,11 @@ int main(int argc,char **argv){
         check(!oni::bridgeId(std::string(32,'G')),"nonhex rejected");
         check(!oni::bridgeActor("admin\nrole=manager"),"actor injection rejected");
         check(!oni::bridgeAction("stop-server"),"arbitrary console action rejected");
+        check(oni::splitNativeCommands("").empty(),"empty native command batch");
+        const auto batch=oni::splitNativeCommands(wire()+std::string(oni::nativeCommandSeparator)+wire(std::string(32,'c')));
+        check(batch.size()==2,"native command batch split");
+        try{oni::splitNativeCommands(wire()+std::string(oni::nativeCommandSeparator));check(false,"trailing native separator rejected");}catch(const std::runtime_error&){}
+        try{oni::splitNativeCommands("not-a-command");check(false,"invalid native command rejected");}catch(const std::runtime_error&){}
         auto modified=wire();modified.replace(modified.find("1000\n"),4,"9223372036854775808");check(!oni::parseRemote(modified,error),"overflow rejected");
         check(oni::remoteRejection(*c,std::string(32,'b'),1001,true,false).empty(),"operator may record");
         check(!oni::remoteRejection(*c,std::string(32,'b'),1001,false,false).empty(),"local controls gate");

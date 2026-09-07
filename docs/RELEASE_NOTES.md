@@ -1,27 +1,27 @@
-# OniProfiler powered by spark 1.0.0
+# OniProfiler powered by spark 1.0.1
 
-First stable release of the combined in-game profiler controls, investigation workflow and private multi-server dashboard. The GLIBC-compatible rc.2 Linux plugin was confirmed to load on a live Endstone/BDS server before promotion. This records plugin discovery and native loading, not completion of every optional integration or performance gate.
+OniProfiler 1.0.1 removes the Python-agent requirement from normal Endstone/Onistone server deployments. The native plugin now links directly to the private dashboard over verified outbound HTTPS while keeping all Endstone APIs on the server thread.
 
-## Loader and distribution
+## Native dashboard link
 
-The Linux native plugin is rebuilt on Ubuntu 22.04 to remove the accidental GLIBC 2.38 requirement from rc.1. Packaging now rejects Linux binaries requiring anything newer than GLIBC 2.35. The raw `endstone_oniprofiler.so` and `endstone_oniprofiler.dll` are direct release assets with checksums, and the plugin emits an early load message before its post-world enable phase.
+- Adds an HTTPS-only native connector using the existing pinned libcurl dependency.
+- Sends fresh plugin snapshots and private JSON reports without a wheel, Python runtime, startup wrapper or separate agent process on the game server.
+- Receives only the existing fixed, allowlisted profiler protocol through the durable local mailbox. Commands remain instance-bound, expiring, session-aware and subject to local control/management gates.
+- Sends immutable command receipts and keeps bounded retry state across restarts.
+- Performs networking and file synchronization on a dedicated worker that never receives Endstone players, worlds, chunks, command senders or server objects.
 
-## In-game control
+## Enrollment and configuration
 
-Guided recordings, readable health checks, background monitoring controls, report history, loaded-area inspection, dimension filters and local before/after baselines. Spark's native sampling, allocation mode and compatible profile format remain the engine. The original advanced command surface is retained with permissions.
+The generated `plugins/oniprofiler/oniprofiler.toml` now includes `dashboard_enabled`, `dashboard_url`, `dashboard_token`, `dashboard_poll_seconds` and `dashboard_sync_reports`. Older managed configs gain these disabled defaults automatically while retaining recognized settings. HTTPS origins and token formats are validated at startup, symlink configs are refused, and Linux config/mailbox files are restricted to the server account.
 
-## Investigation and evidence
+The dashboard's one-time server-token dialog now gives the exact native plugin settings. Connection labels use “server link” instead of implying that an external agent must be installed. The optional Python agent remains available only for advanced host/cgroup/Pterodactyl context, runtime forwarding, local native-profile analysis and explicitly enabled raw-profile upload.
 
-Sustained incident detection with cooldowns, optional local recordings, direct-measurement comparisons, private report notes and native-profile summaries. Entity counts are investigation leads, not measured per-entity tick costs. Native summaries use self-weight without recursive double counting and label inferred categories and limited symbol coverage explicitly.
+## Dashboard reliability
 
-## Private network control
+Browser-origin comparison now canonicalizes scheme/hostname casing, a trailing slash and default HTTP/HTTPS ports. This fixes valid deployments being rejected with `Request origin does not match this dashboard` while retaining same-origin CSRF enforcement.
 
-A self-hosted responsive dashboard, real SQLite-backed authentication and role grants, outbound agents, bounded telemetry/history, short-lived remote requests, exact session/boot checks, immutable receipts, expiring redacted report shares and audit records. Includes opt-in Python/JavaScript callback instrumentation, Node file exporting and a BDS-only experimental HTTP adapter. No automatic whole-interpreter attribution is claimed.
+## Distribution and boundaries
 
-## Build and distribution
+The central dashboard still uses `oniprofiler_control-1.0.1-py3-none-any.whl`; install that wheel only on the dashboard host. Endstone servers require only `endstone_oniprofiler.so` or `endstone_oniprofiler.dll`. Raw `.sparkprofile` files remain local under the native link and still require the optional external agent for deliberate upload.
 
-One GitHub workflow builds Linux x86-64 `.so` and Windows x86-64 `.dll` files, tests the components, publishes both raw binaries, packages corresponding native source, records dependency resolution and writes checksums. Version tags create gated drafts only after all build jobs pass; stable tags create normal releases and suffixed tags create prereleases. An optional Pages workflow publishes only the offline report viewer.
-
-## Release gates
-
-GitHub Actions completed the pinned native dependency build, plugin compilation, automated native tests and packaging on Linux x86-64 and Windows x86-64. Live Linux discovery/loading is confirmed. Windows server loading, the full in-game workflow, external hosting integrations and profiler overhead still require the supplied staging checklist. Do not run alongside standalone Spark or automatically delete entities to address reported concentrations.
+Release artifacts are built from the pinned Spark integration on Ubuntu 22.04 and Windows with LLVM 20. Packaging continues to reject a Linux plugin requiring newer than GLIBC 2.35. Live Linux loading was confirmed for v1.0.0; the supplied staging checklist remains required for v1.0.1 deployment and performance validation.

@@ -31,6 +31,7 @@ session can replace that state.
 | `src/oni/domain.h` | Dependency-free interpretation rules, JSON escaping, rankings, presets, incident/ownership/legacy-command policy. |
 | `src/oni/options.*` | Strict managed TOML configuration. |
 | `src/oni/report_writer.*` | Bounded worker queue, atomic summary replacement, retention and periodic native-file size observations. |
+| `src/oni/dashboard_connector.*` | Native verified-HTTPS heartbeat/report synchronization and fixed-command mailbox delivery. No Endstone objects cross into this worker. |
 | `web/` | Static offline report UI with schema validation and local comparisons. |
 | `tests/` | Portable domain/writer/tool/viewer checks and optional browser integration test. |
 | `upstream/manifest.json` | Explicit provenance, pins and validation status. |
@@ -69,7 +70,7 @@ Spark profile remains the place to inspect call-tree evidence and symbol certain
 
 `src/oni/command_bridge.*` and `bridge_protocol.h` implement a bounded local mailbox with strict field/action parsing, boot identity, session matching, expiry, atomic claims and immutable receipts. A worker handles files; at most one pending command is handed to the native control center per tick. Interrupted claimed files produce an indeterminate receipt on restart and are never replayed.
 
-`controlplane/oniprofiler_control` contains the real API, SQLite store, authentication, outbound agent, local CLI and launcher. The native plugin has no public web listener. All network work is in a separate process. Callback SDKs write bounded immutable snapshots or use a scoped write-only ingestion endpoint. UI charts show actual transmitted history rather than synthetic production placeholders.
+`controlplane/oniprofiler_control` contains the real API, SQLite store, authentication, optional external agent, local CLI and launcher. The native plugin has no public web listener. Its dashboard connector makes verified outbound HTTPS requests from a dedicated worker and exchanges only immutable local files with the main-thread control center. The optional external agent remains available for host/cgroup telemetry, runtime-source forwarding, local native-profile analysis and raw profile upload; it is not required for normal game-server linking. Callback SDKs write bounded immutable snapshots or use a scoped write-only ingestion endpoint. UI charts show actual transmitted history rather than synthetic production placeholders.
 
 The control service protects each server with role grants and verifies a fresh snapshot before creating a command. The native bridge repeats its local policy/session checks. An applied stop receipt is separate from export completion. No arbitrary console command is accepted by the remote API.
 

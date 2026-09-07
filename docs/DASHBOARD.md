@@ -1,6 +1,6 @@
-# Private live dashboard and outbound agents
+# Private live dashboard and native server links
 
-The native plugin works without a dashboard. For the combined system, run one central dashboard and one agent per Minecraft server. Agents read the plugin's timestamped telemetry and reports, synchronize them over verified HTTPS, and deliver a fixed set of profiler requests through a private local mailbox. They never expose a network listener on a Minecraft server.
+The native plugin works without a dashboard. For the combined system, run one central dashboard and enable the native link in each Minecraft server's plugin config. The plugin reads its timestamped telemetry and reports, synchronizes them over verified outbound HTTPS, and delivers a fixed set of profiler requests through its private local mailbox. It never exposes a network listener on a Minecraft server, and the game-server container does not need Python or a wheel.
 
 ## Central dashboard with Docker Compose
 
@@ -19,7 +19,7 @@ The Compose deployment exposes only the TLS proxy, not the API's internal port. 
 
 ## Central dashboard without Docker
 
-Install the included `oniprofiler_control-1.0.0-py3-none-any.whl` into Python 3.11+ in a virtual environment. This is an external dashboard/agent package, not the game plugin, and must not be placed in the Endstone `plugins/` directory. Alternatively install `./controlplane` from source:
+Install the included `oniprofiler_control-1.0.1-py3-none-any.whl` into Python 3.11+ in a virtual environment. This is the external dashboard package, not the game plugin, and must not be placed in the Endstone `plugins/` directory. It also retains an optional advanced-agent command for specialized deployments. Alternatively install `./controlplane` from source:
 
 ```bash
 python -m venv .venv
@@ -35,17 +35,21 @@ Create the data directory with ownership matching the service user first. Put a 
 
 ## Enroll each Minecraft server
 
-Sign in, open **Access & settings**, create the server and copy its one-time agent token. Never paste an administrator session or an application-wide credential into a game add-on.
+Sign in, open **Access & settings**, create the server and copy its one-time server-link token. Never paste an administrator session or an application-wide credential into a game add-on.
 
-Install the control-plane wheel on the game-server host or container. Copy `deploy/agent.example.toml` to a **private** `agent.toml`. Set the dashboard origin, the actual OniProfiler data folder and a unique writable agent-state folder. The plugin data folder is normally `plugins/oniprofiler`; confirm it on your installed Endstone/Onistone build.
+Start the native plugin once so it creates `plugins/oniprofiler/oniprofiler.toml`. Stop the server, then configure:
 
-Save the raw agent token, without a `Bearer` prefix, in the configured owner-only token file. On Linux set `chmod 600`. Run the agent as the same operating-system user as the game server or deliberately provision the mailbox permissions. Do not make the plugin folder world-writable.
-
-```bash
-oniprofiler-agent --config /srv/bedrock/agent.toml
+```toml
+dashboard_enabled = true
+dashboard_url = "https://oniprofiler.oninetwork.com"
+dashboard_token = "paste-the-one-time-server-token-here"
+dashboard_poll_seconds = 5
+dashboard_sync_reports = true
 ```
 
-Create a **separate state directory for each server**. Re-enrolling into a different dashboard/server requires a new state directory. Agent-token rotation invalidates the old token immediately; update its private file and restart the agent.
+Use the public HTTPS origin only, without a trailing path, query, `www` alias or internal port. Paste the raw server token without a `Bearer` prefix. Fully restart the server. A successful link prints `Native dashboard link connected` in the server log and the server becomes current in the dashboard. The plugin protects the managed config as owner-only on Linux because the token is a password.
+
+Do **not** install `oniprofiler_control-*.whl` in the Endstone/Onistone server container. That wheel belongs on the central dashboard host only. Server-token rotation invalidates the old token immediately; replace `dashboard_token` and restart the game server.
 
 ## Enable remote controls deliberately
 
@@ -62,7 +66,7 @@ Remote stop/discard requests identify the exact active session. Operators can st
 
 ## Reports, shares and storage
 
-JSON report synchronization is enabled by default for an enrolled agent. Native analysis is derived locally from available immutable `.sparkprofile` files. Uploading the raw profile is a separate explicit `sync_native_profiles = true` setting. Native files can contain player names, paths and server metadata, so treat them as private diagnostic data.
+JSON report synchronization is enabled by default for the native link. Raw `.sparkprofile` files stay local because they can contain player names, paths and server metadata. The optional external Python agent is still available on hosts that deliberately want local native-profile analysis, raw-profile upload, cgroup/Pterodactyl context or runtime-source forwarding; none of those extras are required to link a normal Endstone server.
 
 Shared reports are read-only, expiring and revoked individually. They exclude names, notes, native payloads, owner/session identity and coordinates by default. Coordinates require explicit approval on share creation. Anyone possessing a live share URL can read that shared view; send it accordingly.
 
@@ -70,13 +74,13 @@ Default limits: 500 reports per server, 24 hours of history, a 2 MiB JSON body l
 
 ## Optional hosting context and notifications
 
-The agent can read a specifically configured cgroup v2 directory. It never assumes its own container is the game server's container. Pterodactyl integration uses the **Client API resources endpoint only**; set `panel_url`, `panel_server`, and supply the API key through `ONI_PANEL_TOKEN`. Use the least-privileged dedicated panel account available. Polling is limited to once per minute. No arbitrary console access is added.
+The optional external agent can read a specifically configured cgroup v2 directory. It never assumes its own container is the game server's container. Pterodactyl integration uses the **Client API resources endpoint only**; set `panel_url`, `panel_server`, and supply the API key through `ONI_PANEL_TOKEN`. Use the least-privileged dedicated panel account available. Polling is limited to once per minute. No arbitrary console access is added.
 
 The central service accepts `ONI_DISCORD_WEBHOOK` for incident notifications to an official Discord webhook. It uses a bounded queue, no mentions and reduced context. The webhook remains server-side. A real Discord/Pterodactyl deployment was not tested here.
 
-## Pterodactyl startup wrapper
+## Optional legacy/advanced external agent
 
-Where the Python wheel is installed in the same container and your host permits startup customization:
+The bundled Python agent and startup wrapper are only for deployments that explicitly need the advanced host/profile features above and have Python available. They are not part of normal game-server installation. Where your host permits that optional setup:
 
 ```bash
 oniprofiler-launch --agent-config /home/container/agent.toml -- ./bedrock_server

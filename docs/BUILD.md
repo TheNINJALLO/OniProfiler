@@ -31,11 +31,11 @@ CMake fetches the pinned Spark commit and verifies every integration patch again
 
 Native CTest runs before packaging. Packaging refuses missing, wrong-format or wrong-architecture plugin files and requires the patched native source dependencies. Platform packages include checksums, dependency resolution metadata and the matching source ZIP. Windows PDB files are retained when generated. Build diagnostics are uploaded even when a job fails.
 
-A pushed tag exactly matching `VERSION`, currently `v1.0.0`, assembles a **draft release only after all jobs pass**. Tags containing a prerelease suffix are marked as prereleases; stable tags are not. Review the staging checklist before publishing. Build success alone is not a claim of complete BDS compatibility or performance overhead.
+A pushed tag exactly matching `VERSION`, currently `v1.0.1`, assembles a **draft release only after all jobs pass**. Tags containing a prerelease suffix are marked as prereleases; stable tags are not. Review the staging checklist before publishing. Build success alone is not a claim of complete BDS compatibility or performance overhead.
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
 ## Local native build

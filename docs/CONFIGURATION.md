@@ -11,6 +11,11 @@ to unrelated staff.
 Default `oniprofiler.toml`:
 
 ```toml
+dashboard_enabled = false
+dashboard_url = ""
+dashboard_token = ""
+dashboard_poll_seconds = 5
+dashboard_sync_reports = true
 remote_controls_enabled = false
 remote_management_enabled = false
 background_enabled = true
@@ -26,6 +31,17 @@ incident_threshold_ms = 100
 incident_sustain_seconds = 5
 incident_cooldown_seconds = 300
 ```
+
+The dashboard fields enable the plugin's native outbound HTTPS connector. Create a
+server in the dashboard, copy its one-time token, paste the raw token without a
+`Bearer` prefix, and set `dashboard_enabled = true`. Use the public HTTPS origin
+only—for example `https://oniprofiler.oninetwork.com`, with no path or query.
+The game server needs only the native plugin binary; do not install the dashboard
+wheel there. Treat this managed TOML as a secret. On Linux the plugin restricts it
+to the server account (`0600`). Token rotation takes effect immediately at the
+dashboard; replace the local value and restart the plugin.
+An older managed config is upgraded with these disabled defaults on first start;
+existing recognized settings are retained.
 
 An incident requires **consecutive observed ticks** lasting at least the threshold
 for the sustained wall-clock duration. One healthy/invalid observation resets the
@@ -54,4 +70,4 @@ personal comments in it are not preserved. Spark's own config is not rewritten b
 those toggles. Invalid TOML or invalid value types/ranges cause startup to fail
 without replacing the invalid file.
 
-The new remote-control booleans require an owner edit and restart. They cannot be enabled from the dashboard. The default outbound-agent interval is five seconds and the service refuses control requests against stale plugin snapshots. See DASHBOARD.md for enrollment and command acknowledgements.
+The remote-control booleans require an owner edit and restart. They cannot be enabled from the dashboard. The native link polls every five seconds by default and the service refuses control requests against stale plugin snapshots. See DASHBOARD.md for enrollment and command acknowledgements.

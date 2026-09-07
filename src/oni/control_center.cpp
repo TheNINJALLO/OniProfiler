@@ -21,8 +21,11 @@ ControlCenter::ControlCenter(endstone::Plugin &plugin, spark::SparkApplication &
     std::random_device random;
     static constexpr char digits[] = "0123456789abcdef";
     for (int i=0;i<32;++i) instance_id_ += digits[random() & 15];
-    if (options_.remote_controls_enabled)
+    if (options_.remote_controls_enabled || options_.dashboard_enabled)
         bridge_ = std::make_unique<CommandBridge>(plugin_.getDataFolder()/"bridge");
+    if (options_.dashboard_enabled)
+        dashboard_ = std::make_unique<DashboardConnector>(plugin_.getDataFolder(), options_.dashboard_url,
+            options_.dashboard_token, options_.dashboard_poll_seconds, options_.dashboard_sync_reports);
     app_.profilerService().oniSetBackgroundEnabled(options_.background_enabled);
     detector_.threshold_ms = options_.incident_threshold_ms;
     detector_.sustain_ms = options_.incident_sustain_seconds * 1000LL;
@@ -36,7 +39,10 @@ void ControlCenter::shutdown()
     for (auto *player : plugin_.getServer().getOnlinePlayers()) {
         if (player && open_forms_.contains(player->getName())) player->closeForm();
     }
-    open_forms_.clear(); if (bridge_) bridge_->stop(); writer_.stop();
+    open_forms_.clear();
+    if (dashboard_) dashboard_->stop();
+    if (bridge_) bridge_->stop();
+    writer_.stop();
     const auto error = writer_.takeError();
     if (!error.empty()) plugin_.getLogger().error("OniProfiler final report write failed: {}", error);
 }
@@ -103,7 +109,7 @@ void ControlCenter::menu(endstone::Player &player)
         {"Previous native reports", [this](auto &p) { reportsMenu(p); }},
         {"Monitoring and settings", [this](auto &p) { settingsMenu(p); }},
         {"Private report viewer instructions", [this](auto &p) {
-            form(p, "Report viewer", "Use the private live dashboard through the separately installed OniProfiler control service and outbound agent. Ask your server owner for its address.\n\nAn offline viewer is also included: open OniProfiler-Report-Viewer.html and import reports/*.json. Native .sparkprofile files retain Spark viewer compatibility.", {{"Back", [this](auto &q){ menu(q); }}});
+            form(p, "Report viewer", "Use the private live dashboard through the OniProfiler control service. The native plugin links itself when dashboard_enabled, dashboard_url, and dashboard_token are configured; no wheel or separate agent is needed on this game server.\n\nAn offline viewer is also included: open OniProfiler-Report-Viewer.html and import reports/*.json. Native .sparkprofile files retain Spark viewer compatibility.", {{"Back", [this](auto &q){ menu(q); }}});
         }}
     });
 }
@@ -274,6 +280,9 @@ void ControlCenter::settingsMenu(endstone::Player &player)
     if (!require(player,"oniprofiler.manage")) return;
     form(player,"Monitoring", "Background sampler: " + yes(options_.background_enabled)
         + "\nIncident alerts: " + yes(options_.incidents_enabled) + "\nAutomatic detailed recordings: " + yes(options_.automatic_profiles)
+        + "\nNative dashboard link: " + yes(options_.dashboard_enabled)
+        + "\nDashboard report sync: " + yes(options_.dashboard_sync_reports)
+        + "\nRemote controls / management: " + yes(options_.remote_controls_enabled) + " / " + yes(options_.remote_management_enabled)
         + "\nExternal sharing permitted: " + yes(options_.allow_external_sharing)
         + "\n\nAn incident needs consecutive ticks of at least " + std::to_string(options_.incident_threshold_ms)
         + " ms for " + std::to_string(options_.incident_sustain_seconds) + " seconds. Cooldown: " + std::to_string(options_.incident_cooldown_seconds) + " seconds."
@@ -355,7 +364,7 @@ std::string ControlCenter::document(const std::string &kind,const Run *run,const
     const auto session=app_.profilerService().oniStatus();
     const Health &display=run?run->after:health_;
     std::string json="{\"schema_version\":1,\"product\":\"OniProfiler powered by spark\",\"version\":"+quote(version)
-        +",\"instance_id\":"+quote(instance_id_)+",\"capabilities\":{\"remote_controls\":"+(options_.remote_controls_enabled?"true":"false")+",\"remote_management\":"+(options_.remote_management_enabled?"true":"false")+"},\"upstream_commit\":"+quote(upstream_commit)+",\"kind\":"+quote(kind)+",\"generated_ms\":"+std::to_string(unixMs())
+        +",\"instance_id\":"+quote(instance_id_)+",\"capabilities\":{\"native_dashboard\":"+(options_.dashboard_enabled?"true":"false")+",\"remote_controls\":"+(options_.remote_controls_enabled?"true":"false")+",\"remote_management\":"+(options_.remote_management_enabled?"true":"false")+"},\"upstream_commit\":"+quote(upstream_commit)+",\"kind\":"+quote(kind)+",\"generated_ms\":"+std::to_string(unixMs())
         +",\"health\":"+healthJson(display)+",\"findings\":"+findingsJson(display)+",\"loaded_areas\":"+areasJson(areas_,areas_ms_)
         +",\"session\":{\"running\":"+(session.running?"true":"false")+",\"background\":"+(session.background?"true":"false")
         +",\"exporting\":"+(session.exporting?"true":"false")+",\"started_ms\":"+std::to_string(session.started_ms)+",\"ends_ms\":"+std::to_string(session.ends_ms)+",\"owner\":"+quote(session.started_ms==remote_session_?remote_owner_:session.owner)+",\"samples\":"+std::to_string(session.samples)+",\"description\":"+quote(statusText())+"},\"history\":[";
@@ -380,7 +389,7 @@ std::string ControlCenter::document(const std::string &kind,const Run *run,const
         json+="{\"owner\":"+quote(entry.user_name)+",\"time_ms\":"+std::to_string(entry.time_ms)+",\"type\":"+quote(entry.type)
             +",\"storage\":"+quote(entry.data_type==spark::Activity::DataType::File?"file":"url")+",\"result\":"+quote(entry.data_value)+"}";
     }
-    json+="],\"limitations\":[\"Aggregate statistics do not identify a specific lag cause.\",\"Loaded-area rankings count entities; they do not measure per-chunk CPU cost.\",\"The before/after fields are rolling 10-second snapshots, not full-session averages.\",\"Unavailable measurements are null, never invented zeroes.\",\"Native profiles can contain sensitive server metadata; review before sharing.\",\"Remote control requires the separate authenticated control service, an outbound agent, and explicit local permission.\"]}";
+    json+="],\"limitations\":[\"Aggregate statistics do not identify a specific lag cause.\",\"Loaded-area rankings count entities; they do not measure per-chunk CPU cost.\",\"The before/after fields are rolling 10-second snapshots, not full-session averages.\",\"Unavailable measurements are null, never invented zeroes.\",\"Native profiles can contain sensitive server metadata; review before sharing.\",\"Remote control requires the authenticated control service, the native outbound dashboard link, and explicit local permission.\"]}";
     return json;
 }
 bool ControlCenter::saveHealth(endstone::CommandSender &sender,const std::string &reason)
@@ -432,6 +441,12 @@ void ControlCenter::incident()
 void ControlCenter::tick(double mspt)
 {
     if (stopped_) return;
+    if (dashboard_) {
+        const auto notice = dashboard_->takeNotice();
+        if (!notice.empty()) plugin_.getLogger().info("OniProfiler: {}", notice);
+        const auto error = dashboard_->takeError();
+        if (!error.empty()) plugin_.getLogger().warning("OniProfiler native dashboard link: {}", error);
+    }
     const auto now=steadyMs();
     if (now>=next_refresh_) {
         refreshHealth(); next_refresh_=now+options_.refresh_seconds*1000LL;

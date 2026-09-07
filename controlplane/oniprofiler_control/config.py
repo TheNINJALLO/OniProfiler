@@ -5,6 +5,22 @@ from pathlib import Path
 import os
 from urllib.parse import urlsplit
 
+def canonical_origin(value: str) -> str:
+    parsed=urlsplit(value)
+    if parsed.username or parsed.password or parsed.query or parsed.fragment or parsed.path not in ("", "/"):
+        raise ValueError("Origin must not contain credentials, a path, query or fragment")
+    if not parsed.hostname:
+        raise ValueError("Origin needs a hostname")
+    try:
+        port=parsed.port
+    except ValueError as error:
+        raise ValueError("Origin port is invalid") from error
+    scheme=parsed.scheme.lower();host=parsed.hostname.lower()
+    if ":" in host:host="["+host+"]"
+    if port is not None and not ((scheme=="https" and port==443) or (scheme=="http" and port==80)):
+        host+=":"+str(port)
+    return scheme+"://"+host
+
 @dataclass(frozen=True)
 class Settings:
     data_dir: Path
@@ -19,10 +35,7 @@ class Settings:
 
     def __post_init__(self) -> None:
         parsed = urlsplit(self.public_origin)
-        if parsed.username or parsed.password or parsed.query or parsed.fragment or parsed.path not in ("", "/"):
-            raise ValueError("ONI_PUBLIC_ORIGIN must be a plain origin without credentials, path, query or fragment")
-        if not parsed.hostname:
-            raise ValueError("ONI_PUBLIC_ORIGIN needs a hostname")
+        canonical_origin(self.public_origin)
         if parsed.scheme != "https":
             if not (self.allow_http_loopback and parsed.scheme == "http" and parsed.hostname in ("127.0.0.1", "localhost", "::1")):
                 raise ValueError("HTTPS is required. Local development alone may use --allow-http-loopback")
@@ -35,7 +48,7 @@ class Settings:
 
     @property
     def origin(self) -> str:
-        return self.public_origin.rstrip("/")
+        return canonical_origin(self.public_origin)
 
     @property
     def secure_cookie(self) -> bool:

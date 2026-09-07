@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(OniProfiler VERSION 1.0.0 LANGUAGES CXX)
+project(OniProfiler VERSION 1.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -33,6 +33,16 @@ if(ONIPROFILER_OFFLINE_TESTS_ONLY)
     return()
 endif()
 
+find_package(CURL CONFIG REQUIRED)
+find_package(tomlplusplus CONFIG REQUIRED)
+add_executable(oni_options_tests tests/options_test.cpp src/oni/options.cpp)
+target_include_directories(oni_options_tests PRIVATE src)
+target_link_libraries(oni_options_tests PRIVATE tomlplusplus::tomlplusplus)
+if(WIN32)
+    target_compile_definitions(oni_options_tests PRIVATE NOMINMAX)
+endif()
+add_test(NAME oni_options COMMAND oni_options_tests)
+
 include(FetchContent)
 # Native release source archives include these exact, already patched checkouts.
 foreach(dependency spark_engine endstone endstone_papi_headers funchook)
@@ -61,10 +71,11 @@ set_target_properties(spark PROPERTIES EXCLUDE_FROM_ALL TRUE EXCLUDE_FROM_DEFAUL
 
 endstone_add_plugin(oniprofiler
     src/plugin.cpp src/oni/control_center.cpp src/oni/options.cpp src/oni/report_writer.cpp src/oni/command_bridge.cpp
+    src/oni/dashboard_connector.cpp
     ${spark_engine_SOURCE_DIR}/src/platform/endstone/adapters.cpp
     ${spark_engine_SOURCE_DIR}/src/platform/endstone/native_plugin_attribution.cpp)
 target_include_directories(oniprofiler PRIVATE src ${spark_engine_SOURCE_DIR}/src)
-target_link_libraries(oniprofiler PRIVATE spark_application spark_papi_integration)
+target_link_libraries(oniprofiler PRIVATE spark_application spark_papi_integration CURL::libcurl)
 set_target_properties(oniprofiler PROPERTIES PREFIX "" OUTPUT_NAME "endstone_oniprofiler")
 if(WIN32)
     target_compile_definitions(oniprofiler PRIVATE NOMINMAX)

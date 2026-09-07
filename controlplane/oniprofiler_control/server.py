@@ -21,8 +21,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from . import __version__
-from .config import Settings
-from .protocol import compare_reports
+from .config import Settings,canonical_origin
+from .protocol import compare_reports,encode_command
 from .security import now_ms, valid_id
 from .store import Store
 
@@ -185,7 +185,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     def check_origin(request: Request) -> None:
-        if request.headers.get("origin")!=settings.origin:
+        try:
+            incoming=canonical_origin(request.headers.get("origin", ""))
+        except ValueError:
+            incoming=""
+        if not hmac.compare_digest(incoming,settings.origin):
             raise HTTPException(403,"Request origin does not match this dashboard")
 
     def current_user(request: Request) -> dict[str,Any]:
@@ -367,6 +371,29 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/api/agent/heartbeat")
     def heartbeat(data: Heartbeat,agent: dict=Depends(current_agent)):
         return {"commands":store.heartbeat(agent["id"],data.snapshot),"server_time_ms":now_ms()}
+
+    async def native_object(request: Request) -> dict[str,Any]:
+        try:
+            value=json.loads(await request.body())
+        except (UnicodeDecodeError,json.JSONDecodeError) as error:
+            raise ValueError("Expected a JSON object") from error
+        if not isinstance(value,dict):
+            raise ValueError("Expected a JSON object")
+        return value
+
+    @app.post("/api/native/heartbeat")
+    async def native_heartbeat(request: Request,agent: dict=Depends(current_agent)):
+        commands=store.heartbeat(agent["id"],await native_object(request))
+        wire=b"\n--oniprofiler-command--\n".join(encode_command(command) for command in commands)
+        return Response(content=wire,media_type="application/x-oniprofiler-commands")
+
+    @app.post("/api/native/report/{source_key}")
+    async def native_report(source_key: str,request: Request,agent: dict=Depends(current_agent)):
+        report=await native_object(request)
+        identity,created=store.ingest_report(agent["id"],source_key,report)
+        if created and report.get("kind")=="incident":
+            notices.incident(agent["name"],report)
+        return {"id":identity,"created":created}
 
     @app.post("/api/agent/report")
     def ingest_report(data: IncomingReport,agent: dict=Depends(current_agent)):

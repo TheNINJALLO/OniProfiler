@@ -1,38 +1,31 @@
 {
   "product": "OniProfiler powered by spark",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "date": "2026-09-07",
-  "delivery": "stable source, built Python wheel, raw plugins and CI-built Linux/Windows native packages",
-  "native_plugin_built": true,
-  "github_workflow_executed": true,
-  "github_workflow": {
-    "run_id": 34152091512,
-    "commit": "224bc740c7d9d05c969eb92a5b3bbf1c9dd4e81c",
-    "conclusion": "success",
-    "native_platforms": ["linux-x86_64", "windows-x86_64"]
-  },
+  "delivery": "release candidate pending the tagged Linux and Windows native workflow",
+  "native_plugin_built": false,
+  "github_workflow_executed": false,
+  "github_workflow": null,
   "bds_runtime_tested": false,
-  "linux_native_load_confirmed": true,
-  "linux_native_load_scope": "Server owner reported the GLIBC-compatible rc.2 raw plugin loads and works in a live Endstone/BDS container; full smoke and performance gates remain open.",
+  "linux_native_load_confirmed": false,
+  "linux_native_load_scope": "Live Linux loading was confirmed for v1.0.0. The v1.0.1 native dashboard connector still requires its supplied staging gate.",
   "passed": {
-    "cpp_domain_checks": 85,
-    "cpp_bridge_checks": 29,
-    "python_tests_passed": 81,
+    "cpp_domain_checks": 82,
+    "cpp_bridge_checks": 31,
+    "cpp_options_checks": 11,
+    "python_tests_passed": 82,
     "python_tests_skipped": 3,
-    "python_subtests_passed": 32,
     "javascript_tests": 28,
-    "offline_browser_checks": 34,
-    "dashboard_dom_checks": 58,
     "http_smoke_checks": 15,
-    "ctest_suites": 5,
-    "asan_ubsan": true,
-    "wheel_build_install_smoke": true
+    "portable_ctest_suites": 5,
+    "wheel_build": true,
+    "connector_strict_windows_compile": true
   },
-  "browser_scope": "Actual assets; explicit synthetic mocked API for dashboard DOM. Real HTTP service/agent tested separately. Browser navigation was blocked.",
-  "native_configuration_result": "Passed in GitHub Actions with pinned Conan graph, LLVM 20, Ubuntu 22.04 Linux baseline capped at GLIBC 2.35, and Windows",
+  "browser_scope": "The v1.0.1 dashboard DOM suite is a required GitHub release gate using explicit synthetic mocked API responses. Real API behavior is tested separately.",
+  "native_configuration_result": "Pending the pinned LLVM 20 Linux and Windows GitHub workflow",
   "runtime_environment": {
-    "python": "3.13.5",
-    "cpp_compiler": "GCC 14.2.0",
-    "playwright": "1.57.0"
+    "python": "3.11.9",
+    "cpp_compiler": "MSVC 19.44 for local source checks",
+    "node": "20.19.6"
   }
 }

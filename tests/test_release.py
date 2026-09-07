@@ -15,7 +15,7 @@ from package import validate_binary,validate_linux_glibc,source_archive
 from oniprofiler_control.sdk import Instrumentor
 
 class ReleaseTests(unittest.TestCase):
-    def test_versions(self):self.assertEqual(verify(),'1.0.0')
+    def test_versions(self):self.assertEqual(verify(),'1.0.1')
     def test_native_platform_matrix(self):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
         platforms=w['jobs']['native']['strategy']['matrix']['include']
@@ -56,7 +56,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertIn('6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',sh);self.assertIn('signed-by=',sh)
     def test_combined_source_files_included(self):
         names={p.relative_to(ROOT).as_posix() for p in project_files(ROOT)}
-        self.assertTrue({'INSTALL.md','controlplane/oniprofiler_control/server.py','controlplane/oniprofiler_control/static/app.js','controlplane/pyproject.toml','integrations/runtime-sdk.mjs','deploy/Dockerfile','deploy/Caddyfile','deploy/agent.example.toml','tools/ci/install-llvm-windows.ps1','.github/workflows/build.yml','VERSION','controlplane/LICENSE'}<=names)
+        self.assertTrue({'INSTALL.md','src/oni/dashboard_connector.cpp','src/oni/dashboard_connector.h','tests/options_test.cpp','controlplane/oniprofiler_control/server.py','controlplane/oniprofiler_control/static/app.js','controlplane/pyproject.toml','integrations/runtime-sdk.mjs','deploy/Dockerfile','deploy/Caddyfile','deploy/agent.example.toml','tools/ci/install-llvm-windows.ps1','.github/workflows/build.yml','VERSION','controlplane/LICENSE'}<=names)
         self.assertIn('"INSTALL.md"',(ROOT/'tools/package.py').read_text())
     def test_private_and_build_files_excluded(self):
         with tempfile.TemporaryDirectory() as d:

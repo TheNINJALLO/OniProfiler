@@ -5,7 +5,7 @@ from conan.tools.cmake import cmake_layout
 
 class OniProfilerRecipe(ConanFile):
     name = "oniprofiler"
-    version = "1.0.0"
+    version = "1.0.1"
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeToolchain", "CMakeDeps"
 
