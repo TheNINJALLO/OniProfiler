@@ -20,4 +20,4 @@ One GitHub workflow builds Linux x86-64 `.so` and Windows x86-64 `.dll` files, t
 
 ## Release gates
 
-The source-authoring environment compiled portable components and ran API, SDK and UI checks. The complete native dependency build, real BDS integration, Windows loading, external hosting integrations and profiler overhead still require the supplied staging checklist. Actual GitHub build results take precedence over this release note. Do not run alongside standalone Spark or automatically delete entities to address reported concentrations.
+GitHub Actions completed the pinned native dependency build, plugin compilation, automated native tests and packaging on Linux x86-64 and Windows x86-64. Real BDS integration, Windows server loading, external hosting integrations and profiler overhead still require the supplied staging checklist. Do not run alongside standalone Spark or automatically delete entities to address reported concentrations.
