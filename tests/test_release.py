@@ -33,6 +33,12 @@ class ReleaseTests(unittest.TestCase):
         self.assertIn('--build-dir build/RelWithDebInfo',text)
         binary=[s for s in steps if s.get('with',{}).get('archive')=='false'][0]
         self.assertEqual(binary['with']['if-no-files-found'],'error')
+    def test_repository_conan_profile_is_selected(self):
+        self.assertEqual((ROOT/'.conanrc').read_text().strip(),'conan_home=./.conan2')
+        self.assertTrue((ROOT/'.conan2/profiles/default').is_file())
+    def test_zip_importer_cannot_overwrite_normal_pushes(self):
+        workflow=yaml.load((ROOT/'.github/workflows/github_workflows_extract-zip.yml').read_text(),Loader=yaml.BaseLoader)
+        self.assertEqual(workflow['on'],{'workflow_dispatch':{}})
     def test_toolchain_verification(self):
         ps=(ROOT/'tools/ci/install-llvm-windows.ps1').read_text();sh=(ROOT/'tools/ci/install-llvm-linux.sh').read_text()
         self.assertIn('3197846a2b19063687dd56e93e34cd941e3548d907f23a6131571321bdf9fe7b',ps)

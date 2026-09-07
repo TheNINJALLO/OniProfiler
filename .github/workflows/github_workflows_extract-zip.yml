@@ -1,10 +1,7 @@
-name: Extract and commit repository zip
+name: Extract and commit repository zip manually
 
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - main
 
 jobs:
   extract-and-commit:

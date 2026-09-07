@@ -56,7 +56,7 @@ class ViewerBundleTests(unittest.TestCase):
     def test_assets_have_exact_hashes(self):
         html=build_viewer.bundle(ROOT)
         for name in ['styles.css','data.js','app.js']:
-            self.assertIn(build_viewer.csp_hash((ROOT/'web'/name).read_text()),html)
+            self.assertIn(build_viewer.csp_hash((ROOT/'web'/name).read_text(encoding='utf-8')),html)
     def test_scripts_follow_the_document(self):
         html=build_viewer.bundle(ROOT)
         self.assertGreater(html.index('<script>'),html.index('</main>'))
