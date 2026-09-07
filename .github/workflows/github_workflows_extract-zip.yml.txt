@@ -1,0 +1,65 @@
+name: Extract and commit repository zip
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+
+jobs:
+  extract-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Install unzip and rsync
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip rsync
+
+      - name: Verify zip exists
+        env:
+          ZIP_NAME: OniProfiler-1.0.0-rc.1-combined-project.zip
+        run: |
+          if [ ! -f "$ZIP_NAME" ]; then
+            echo "ERROR: $ZIP_NAME not found in repository root"
+            ls -la
+            exit 1
+          fi
+
+      - name: Extract zip preserving dotfiles
+        env:
+          ZIP_NAME: OniProfiler-1.0.0-rc.1-combined-project.zip
+        run: |
+          set -euo pipefail
+          TMPDIR=$(mktemp -d)
+          unzip -q "$ZIP_NAME" -d "$TMPDIR"
+
+          shopt -s nullglob dotglob || true
+          entries=("$TMPDIR"/*)
+          if [ "${#entries[@]}" -eq 1 ] && [ -d "${entries[0]}" ]; then
+            SRC="${entries[0]}"
+          else
+            SRC="$TMPDIR"
+          fi
+
+          rsync -a --exclude='.git' "$SRC"/ .
+
+          rm -rf "$TMPDIR"
+
+      - name: Commit and push extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "Extract OniProfiler zip into repository root"
+            git push origin HEAD:main
+          else
+            echo "No changes to commit"
+          fi
