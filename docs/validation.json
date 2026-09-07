@@ -2,14 +2,22 @@
   "product": "OniProfiler powered by spark",
   "version": "1.0.0-rc.1",
   "date": "2026-09-07",
-  "delivery": "combined release-candidate source and built Python wheel",
-  "native_plugin_built": false,
-  "github_workflow_executed": false,
+  "delivery": "combined release-candidate source, built Python wheel and CI-built Linux/Windows native artifacts",
+  "native_plugin_built": true,
+  "github_workflow_executed": true,
+  "github_workflow": {
+    "run_id": 34140573477,
+    "commit": "52b23dc2e13df62b9d90b7c6c3dc40882394ac16",
+    "conclusion": "success",
+    "native_platforms": ["linux-x86_64", "windows-x86_64"]
+  },
   "bds_runtime_tested": false,
   "passed": {
     "cpp_domain_checks": 85,
     "cpp_bridge_checks": 29,
-    "python_tests": 78,
+    "python_tests_passed": 77,
+    "python_tests_skipped": 3,
+    "python_subtests_passed": 32,
     "javascript_tests": 28,
     "offline_browser_checks": 34,
     "dashboard_dom_checks": 58,
@@ -19,7 +27,7 @@
     "wheel_build_install_smoke": true
   },
   "browser_scope": "Actual assets; explicit synthetic mocked API for dashboard DOM. Real HTTP service/agent tested separately. Browser navigation was blocked.",
-  "native_configuration_result": "Failed dependency fetch: container DNS could not resolve github.com",
+  "native_configuration_result": "Passed in GitHub Actions with pinned Conan graph and LLVM 20 on Linux and Windows",
   "runtime_environment": {
     "python": "3.13.5",
     "cpp_compiler": "GCC 14.2.0",

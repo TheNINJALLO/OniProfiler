@@ -2,7 +2,7 @@
 
 Date: 2026-09-07  
 Version: 1.0.0-rc.1  
-Delivery: combined release-candidate source, GitHub build workflows, built Python control-plane wheel, offline viewer and clearly labeled UI previews.
+Delivery: combined release-candidate source, GitHub build workflows, built Python control-plane wheel, CI-built Linux/Windows native artifacts, offline viewer and clearly labeled UI previews.
 
 ## What actually passed
 
@@ -10,7 +10,7 @@ Delivery: combined release-candidate source, GitHub build workflows, built Pytho
 | --- | --- | --- |
 | Portable native domain/report writer | 85 C++ checks | Health interpretation, missing data, incidents, loaded-area ranking, permissions/ownership, local reports, retention and filesystem handling. |
 | Portable native command bridge | 29 C++ checks | Fixed protocol parsing, numeric bounds, action gates, expiry/boot checks, atomic claims, immutable receipts, duplicate prevention and interrupted-claim recovery. |
-| Python tests | 78 tests | Real SQLite-backed API and agent tests, CSRF, scoped access, session/token changes, report sharing, profile parsing, runtime SDKs, source/packaging checks, workflow contracts and launcher signal-policy tests. Includes a compiled C++/Python command-wire contract check. |
+| Python tests | 77 passed, 3 skipped, 32 subtests passed | Real SQLite-backed API and agent tests, CSRF, scoped access, session/token changes, report sharing, profile parsing, runtime SDKs, source/packaging checks, workflow contracts and launcher signal-policy tests. Includes a compiled C++/Python command-wire contract check. |
 | JavaScript tests | 28 tests | 20 report-data tests and 8 runtime-SDK tests. |
 | Offline browser viewer | 34 checks | Actual bundled HTML and production CSP hashes at 1440x1080 and 390x844; imports, filtering, comparisons, keyboard tabs, unknown metrics, hostile text and clearing data. |
 | Live dashboard browser DOM | 58 checks | Actual static assets at 1440x1050 and 390x844; explicit synthetic mocked API responses, sign-in/out, server switching, charts, guided requests, filters, notes, shares, role-based controls, modal cleanup and hostile text. |
@@ -18,25 +18,19 @@ Delivery: combined release-candidate source, GitHub build workflows, built Pytho
 | CTest | 5 of 5 suites passed | Portable C++, Python, report JavaScript, command bridge and runtime JavaScript. The real HTTP and browser scripts were also executed separately. |
 | C++ warnings/sanitizers | Passed | Both portable executables built with GCC 14.2.0, C++20, -Wall -Wextra -Wpedantic -Werror, AddressSanitizer and UndefinedBehaviorSanitizer. Re-running those tests is not counted as extra independent checks. |
 | Wheel build and installation | Passed | Built a real platform-independent Python wheel using the installed setuptools backend, installed it into an isolated target directory and ran the HTTP smoke and all four command help entry points. |
-| Workflow/metadata structure | Passed | YAML and matrix/gate/artifact contracts, metadata version consistency, fail-on-missing binary checks and explicit LLVM checksum/signing-key verification requirements. This is not a GitHub workflow execution. |
+| GitHub workflow and metadata | Passed | Run [34140573477](https://github.com/TheNINJALLO/OniProfiler/actions/runs/34140573477) completed at commit `52b23dc`: application checks, Linux and Windows native matrices, native tests, package checks and artifact uploads all passed. Metadata version consistency, fail-on-missing binary checks and explicit LLVM checksum/signing-key verification requirements also passed. |
 
 No external requests were observed in the tested browser DOM flows. The dashboard DOM tests deliberately mock its API; they do not claim browser-to-service networking. The offline viewer retains its actual CSP hash protection in the test bundle. The live dashboard's strict response headers and API permissions are tested independently against the real application.
 
 Browser navigation to local HTTP was blocked by the environment with ERR_BLOCKED_BY_ADMINISTRATOR. That restriction was not bypassed. The separate real HTTP service/agent test uses HTTP clients and synthetic plugin files, not a browser or Bedrock process.
 
-## Native build attempt: blocked, not passed
+## Native build and CI result
 
-A real full CMake configuration attempt reached its pinned Spark dependency fetch and failed:
+GitHub Actions run [34140573477](https://github.com/TheNINJALLO/OniProfiler/actions/runs/34140573477) completed successfully for commit `52b23dc2e13df62b9d90b7c6c3dc40882394ac16`. Both native matrices used the pinned Conan graph and LLVM 20 toolchains, configured the pinned Spark and Endstone integration, built the plugin and tests, passed CTest, and passed the packaging/checksum gates.
 
-```text
-fatal: unable to access 'https://github.com/EndstoneMC/spark.git/': Could not resolve host: github.com
-Failed to clone repository: 'https://github.com/EndstoneMC/spark.git'
-Configuration return code: 1
-```
+The run uploaded raw `endstone_oniprofiler.dll` and `endstone_oniprofiler.so` plugin artifacts, Windows and Linux release packages with corresponding source/notices, native diagnostics, the Python application package, dashboard/agent assets and interface-test evidence. These are CI build artifacts, not a published GitHub release.
 
-The environment has GCC 14.2.0, Clang 17 and no installed Conan. The required native CI toolchain is Clang/LLVM 20. The container could not retrieve the required native source/dependencies. **No completed native `.so` or `.dll` was built, installed or included in this delivery.**
-
-The full GitHub workflow was not run, and no repository push or release publication was performed. The target repository could not be resolved by the available GitHub connection during the task. Source can be published with the bundled local GitHub CLI helper or committed normally. Native compilation could reveal integration issues not exercised by portable tests; the pipeline intentionally fails rather than packaging a missing binary.
+This verifies native compilation and automated test/package compatibility on the hosted Windows and Linux runners. It does not verify loading or runtime behavior inside Bedrock Dedicated Server.
 
 ## Still requires real deployment evidence
 
