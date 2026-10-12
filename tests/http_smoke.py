@@ -10,6 +10,7 @@ import sys
 import tempfile
 import time
 import httpx
+from oniprofiler_control import __version__
 from oniprofiler_control.config import Settings
 from oniprofiler_control.store import Store
 from oniprofiler_control.agent import Agent,AgentSettings
@@ -46,7 +47,7 @@ def main():
                         except httpx.ConnectError:pass
                         time.sleep(.1)
                     else:raise RuntimeError('HTTP service did not become ready')
-                    assert response.json()['version']=='1.0.1';checks+=1
+                    assert response.json()['version']==__version__;checks+=1
                     assert client.get('/api/me').status_code==401;checks+=1
                     page=client.get('/');assert 'OniProfiler' in page.text and "script-src 'self'" in page.headers['content-security-policy'];checks+=1
                     assert client.get('/static/app.js').status_code==200;checks+=1
