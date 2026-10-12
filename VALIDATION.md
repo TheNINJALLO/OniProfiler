@@ -1,3 +1,9 @@
+# Endstone 0.11.14 compatibility check â€” 2026-10-12
+
+OniProfiler 1.0.2 was rebuilt against SDK `03f4189b1535af0870861748fc569f6deac0ad65`. The Linux native CTest suite passed 33/33, offline CTest passed 3/3, the Python suite passed 81 tests and 32 subtests (1 skipped), and the JavaScript checks passed. A disposable BDS 1.26.52.3 server loaded the plugin, recorded and exported a local `.sparkprofile`, and stopped cleanly. The binary passed the GLIBC <=2.35 package check. Linux cpptrace uses its signal-safe libunwind backend.
+
+Artifact identity and live check results: `docs/validation-endstone-0.11.14.json`. Existing client, Windows, optional integration, and performance staging gates remain open. The release scope is limited to the checks recorded here. Earlier records follow.
+
 # OniProfiler powered by spark: validation record
 
 Date: 2026-09-07  

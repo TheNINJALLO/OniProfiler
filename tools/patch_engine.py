@@ -10,7 +10,7 @@ import hashlib
 from pathlib import Path
 
 SPARK_COMMIT = "8958173ad40c1da9adf3254305526443c9853848"
-ENDSTONE_COMMIT = "8f84d6f5b556916597ed5b6b71329b2ed3ca8fc8"
+ENDSTONE_COMMIT = "03f4189b1535af0870861748fc569f6deac0ad65"
 PAPI_COMMIT = "3bc3dbf99010e7af09b967d913b5b6a7e182e989"
 
 API = '''    // ONIPROFILER_INTEGRATION: main-thread-only structured access.

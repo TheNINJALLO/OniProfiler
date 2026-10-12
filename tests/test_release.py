@@ -15,7 +15,7 @@ from package import validate_binary,validate_linux_glibc,source_archive
 from oniprofiler_control.sdk import Instrumentor
 
 class ReleaseTests(unittest.TestCase):
-    def test_versions(self):self.assertEqual(verify(),'1.0.1')
+    def test_versions(self):self.assertEqual(verify(),'1.0.2')
     def test_native_platform_matrix(self):
         w=yaml.load((ROOT/'.github/workflows/build.yml').read_text(),Loader=yaml.BaseLoader)
         platforms=w['jobs']['native']['strategy']['matrix']['include']

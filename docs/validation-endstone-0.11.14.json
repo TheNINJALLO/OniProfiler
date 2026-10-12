@@ -1,0 +1,16 @@
+{
+  "endstone": "0.11.14",
+  "bds_package": "1.26.52.3",
+  "platform": "linux-x86_64",
+  "artifact_sha256": "f09f56dbd2db017a580d5642cd07d9a17d901115c34b915fb4f142ebdc080b8f",
+  "checks": {
+    "endstone_0_11_14": true,
+    "native_enabled": true,
+    "capture_started": true,
+    "native_profile_exported": true,
+    "clean_shutdown": true,
+    "no_plugin_errors": true
+  },
+  "passed": true,
+  "glibc_baseline_check_passed": true
+}

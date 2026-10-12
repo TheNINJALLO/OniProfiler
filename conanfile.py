@@ -5,12 +5,18 @@ from conan.tools.cmake import cmake_layout
 
 class OniProfilerRecipe(ConanFile):
     name = "oniprofiler"
-    version = "1.0.1"
+    version = "1.0.2"
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeToolchain", "CMakeDeps"
 
     def layout(self):
         cmake_layout(self)
+
+    def configure(self):
+        if self.settings.os == "Linux":
+            # SIGPROF sampling requires the signal-safe unwinder. Conan's
+            # default backend can compile successfully while refusing capture.
+            self.options["cpptrace"].unwind = "libunwind"
 
     def requirements(self):
         for dependency in ("cpptrace/1.0.4", "concurrentqueue/1.0.4", "zlib/1.3.1",

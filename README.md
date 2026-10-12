@@ -1,8 +1,10 @@
 # OniProfiler powered by spark
 
+> Endstone 0.11.14 release 1.0.2: This release includes verified Linux native artifacts. Windows runtime qualification remains pending for this Endstone update. The recorded validation defines the tested scope.
+
 **Private performance investigations for Minecraft Bedrock servers.** A combined implementation of the in-game control center, investigation tools and live multi-server dashboard.
 
-Version: **1.0.1**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit recorded in `upstream/manifest.json`.
+Version: **1.0.2**. Native engine: EndstoneMC/spark 0.5.3 at the exact commit recorded in `upstream/manifest.json`.
 
 > Release binaries are compiled and tested by GitHub Actions, and the corrected Linux native plugin has been confirmed to load on a live Endstone/BDS server. The complete integration and overhead checklist in [VALIDATION.md](VALIDATION.md) remains the boundary for production claims.
 
