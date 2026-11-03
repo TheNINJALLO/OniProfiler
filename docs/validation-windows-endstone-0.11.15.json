@@ -1,0 +1,21 @@
+{
+  "plugin": "profiler",
+  "version": "1.0.3",
+  "endstone": "0.11.15",
+  "bds": "1.26.60.6",
+  "platform": "windows-x86_64",
+  "artifact_sha256": "f50fd9f119aea20a93d3308b4cff39fd4086f0073438a257d85675dca94552df",
+  "bds_sha256": "d7b26d6c5e8f3e910f66e8cbf7e1dfde06e570032349bf7abdd070deb6e9d884",
+  "build_commit": "35bfe80b54b17299482ee812284cc033b48b91f3",
+  "build_workflow": "https://github.com/TheNINJALLO/OniProfiler/actions/runs/41569224346",
+  "checks": {
+    "endstone_0_11_15": true,
+    "native_enabled": true,
+    "capture_started": true,
+    "native_profile_exported": true,
+    "clean_shutdown": true,
+    "no_plugin_errors": true
+  },
+  "passed": true,
+  "retail_or_full_acceptance": "not run"
+}
