@@ -1,3 +1,11 @@
+# OniProfiler powered by spark 1.0.3
+
+Rebuilds against Endstone 0.11.15 SDK `b4aaa87d2c5305e7d340168f824ac2e2ea722e44` for BDS 1.26.60.6. The pinned Spark engine and source-verification guards are preserved.
+
+The Linux x86-64 artifact passed native CTest (33 suites), offline CTest (3 suites, including 82 Python tests), 28 JavaScript tests, the GLIBC <=2.35 package gate, disposable-server recording/export/shutdown, and a protocol-2225 client form open/cancel check. Exact artifact identity and scope are in `docs/validation-endstone-0.11.15.json`.
+
+Windows runtime qualification, retail clients, optional integrations and performance staging remain pending. Download the raw `.so` for the game server; the optional control-plane wheel belongs on the dashboard host. Source and notices retain GPL-3.0 attribution to EndstoneMC/spark. Earlier release notes follow.
+
 # OniProfiler powered by spark 1.0.1
 
 OniProfiler 1.0.1 removes the Python-agent requirement from normal Endstone/Onistone server deployments. The native plugin now links directly to the private dashboard over verified outbound HTTPS while keeping all Endstone APIs on the server thread.

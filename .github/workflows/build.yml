@@ -174,6 +174,10 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           python tools/check_release.py --tag "$RELEASE_TAG" --release-assets release-assets --checksums release-assets
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release already exists; preserving its validated artifacts."
+            exit 0
+          fi
           release_flags=(--draft)
           if [[ "$RELEASE_TAG" == *-* ]]; then
             release_flags+=(--prerelease)

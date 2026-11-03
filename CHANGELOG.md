@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3 (local candidate)
+
+Rebuilt against Endstone 0.11.15 for BDS 1.26.60.6. The Spark pin and fail-closed content checks are preserved. Linux native/offline suites, JavaScript checks, live recording/export, clean shutdown and the GLIBC ceiling passed. Windows and the remaining deployment/performance gates stay unqualified. No release was published.
+
 ## 1.0.1
 
 Added the native outbound dashboard connector so Endstone servers no longer need the Python wheel or a separate agent process. Added automatic managed-config migration, HTTPS/token validation, bounded snapshot/report/receipt synchronization, server-link setup guidance, and canonical browser-origin handling for valid proxy deployments.

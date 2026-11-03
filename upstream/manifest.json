@@ -3,15 +3,15 @@
   "spark_commit": "8958173ad40c1da9adf3254305526443c9853848",
   "spark_version": "0.5.3",
   "endstone_repository": "https://github.com/EndstoneMC/endstone",
-  "endstone_commit": "03f4189b1535af0870861748fc569f6deac0ad65",
-  "endstone_release": "0.11.14",
+  "endstone_commit": "b4aaa87d2c5305e7d340168f824ac2e2ea722e44",
+  "endstone_release": "0.11.15",
   "papi_repository": "https://github.com/EndstoneMC/papi",
   "papi_commit": "3bc3dbf99010e7af09b967d913b5b6a7e182e989",
   "integration": "tools/patch_engine.py; content-verified, fail-closed",
   "license": "GPL-3.0-only",
-  "checked_on": "2026-10-12",
+  "checked_on": "2026-11-02",
   "runtime_tested": false,
   "linux_native_load_confirmed": true,
-  "linux_native_load_scope": "Executed on disposable Linux x86-64 BDS 1.26.52.3 / Endstone 0.11.14: native load, quick recording, local .sparkprofile export, and clean shutdown passed. Full client, Windows, optional integration and performance staging gates remain open; docs/validation-endstone-0.11.14.json records artifact identity.",
-  "previous_linux_native_load_scope": "Server owner reported the GLIBC-compatible rc.2 plugin loads and works; full smoke and performance gates remain open."
+  "linux_native_load_scope": "Executed on disposable Linux x86-64 BDS 1.26.60.6 / Endstone 0.11.15: native load, quick recording, local .sparkprofile export, and clean shutdown passed. Native CTest 33/33 and offline CTest 3/3 passed. Retail client, Windows, optional integration and performance staging gates remain open; docs/validation-endstone-0.11.15.json records artifact identity.",
+  "previous_linux_native_load_scope": "Executed on disposable Linux x86-64 BDS 1.26.52.3 / Endstone 0.11.14: native load, quick recording, local .sparkprofile export, and clean shutdown passed. Full client, Windows, optional integration and performance staging gates remain open; docs/validation-endstone-0.11.14.json records artifact identity."
 }
